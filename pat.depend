@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1551250308 source:c:\users\wella\documents\pat\pat\main.cpp
+1551275837 source:c:\users\wella\documents\pat\pat\main.cpp
 	<iostream>
 	<cstdio>
 	<string>
@@ -8,5 +8,6 @@
 	<math.h>
 	<regex>
 	<set>
+	<map>
 	<queue>
 

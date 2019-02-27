@@ -1,0 +1,118 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+#include<queue>
+using namespace std;
+
+int house_count,location_count,road_count,Range;
+int total;
+
+int **adj;
+bool *vis;
+int *dis;
+
+double resMin;
+double resAvg;
+bool dijkstra(int _start){
+    memset(dis,0x3f,sizeof(int)*total);
+    memset(vis,0,sizeof(bool)*total);
+    for(int i=0;i<total;i++){
+        dis[i]=adj[_start][i];
+    }
+    vis[_start]=true;
+
+    for(int i=0;i<total;i++){
+        int _min=0x3f3f3f3f;
+        int n=0;
+        for(int j=0;j<total;j++){
+            if(!vis[j] && _min>dis[j]){
+                _min=dis[j];
+                n=j;
+            }
+        }
+        vis[n]=true;
+        if(dis[n]>Range && n<house_count) return false;
+        for(int j=0;j<total;j++){
+            if(!vis[j]&&dis[j]>dis[n]+adj[n][j]){
+                dis[j]=dis[n]+adj[n][j];
+            }
+        }
+    }
+
+    resMin=0x3f3f3f3f;
+    resAvg=0;
+    for(int i=0;i<house_count;i++){
+        if(dis[i]>Range)return false;
+        resAvg+=dis[i];
+        resMin=min(resMin,(double)dis[i]);
+    }
+    resAvg/=house_count;
+    return true;
+}
+
+struct res{
+    int id;
+    double _min;
+    double avg;
+    res(int a,double b,double c){
+        id=a;_min=b;avg=c;
+    }
+};
+bool cmp(const res& a,const res&b){
+    if(a._min==b._min){
+        if(a.avg==b.avg){
+            return a.id<b.id;
+        }
+        return a.avg<b.avg;
+    }
+    return a._min>b._min;
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>house_count>>location_count>>road_count>>Range;
+
+    total=house_count+location_count;
+    adj=new int*[total];
+    for(int i=0;i<total;i++){
+        adj[i]=new int[total];
+        memset(adj[i],0x3f,sizeof(int)*total);
+    }
+    dis=new int[total];
+    vis=new bool[total];
+
+    for(int i=0;i<road_count;i++){
+        string s1,s2;int a,b,c;
+        cin>>s1>>s2>>c;
+        if(s1[0]=='G')
+            a=s1[1]-'0'-1+house_count;
+        else a=s1[0]-'0'-1;
+        if(s2[0]=='G')
+            b=s2[1]-'0'-1+house_count;
+        else b=s2[0]-'0'-1;
+        adj[a][b]=adj[b][a]=c;
+    }
+
+    vector<res> v;
+    for(int i=house_count;i<total;i++){
+        if(dijkstra(i)){
+            res r(i,resMin,resAvg);
+            v.push_back(r);
+        }
+    }
+
+    if(v.size()==0){
+        cout<<"No Solution";
+        return 0;
+    }
+    sort(v.begin(),v.end(),cmp);
+
+    printf("G%d\n%0.1f %0.1f",v[0].id-house_count+1,v[0]._min,v[0].avg);
+    return 0;
+}
