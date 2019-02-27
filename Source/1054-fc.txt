@@ -1,0 +1,56 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+
+using namespace std;
+
+struct node{
+	int count;
+	unsigned int color;
+};
+
+vector<node> img;
+int search(unsigned int d) {
+	for (int i = 0; i < img.size(); i++)
+	{
+		if (img[i].color==d)
+		{
+			img[i].count++;
+			return img[i].count;
+		}
+	};
+	node *n = new node();
+	n->color = d;
+	n->count = 0;
+	img.push_back(*n);
+	return 0;
+}
+int main() 
+{
+	int a, b,count;
+	scanf("%d", &a);
+	scanf("%d", &b);
+	count = a * b/2;
+	unsigned int res = 0;
+	getchar();
+	for (int i = 0; i < b; i++)
+	{
+		for (int i = 0; i < a; i++)
+		{
+			unsigned int d;
+			scanf("%d", &d);
+			if (search(d)>=count)
+			{
+				res = d;
+				cout << d;
+				return 0;
+			}
+		}
+		getchar();
+	}
+	return 0;
+}

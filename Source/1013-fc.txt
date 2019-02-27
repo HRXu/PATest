@@ -1,0 +1,90 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+
+int *pre;
+bool *vis;
+using namespace std;
+struct road {
+	int a;
+	int b;
+};
+vector<road> set;
+int find(int i,int *arr) {
+	if (arr[i]==i)
+	{
+		return i;
+	}
+	return arr[i]=find(arr[i],arr);
+}
+void _union(int i, int j, int *arr) {
+	int x1 = find(i,arr), x2 = find(j,arr);
+	if (x1!=x2)
+	{
+		arr[x2] = x1;
+	}
+}
+
+
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int cityCount, roadCount,checkCount;
+	cin >> cityCount >> roadCount >> checkCount;
+	pre = new int[cityCount];
+	vis = new bool[cityCount];
+	for (int i = 0; i < roadCount; i++)
+	{
+		road r;
+		scanf("%d %d", &r.a, &r.b);
+		r.a--; r.b--;
+		set.push_back(r);
+	}
+
+	for (int i = 0; i < checkCount; i++)
+	{
+		for (int i = 0; i < cityCount; i++)
+		{
+			pre[i] = i;
+			vis[i] = false;
+		}
+		//
+		int node;
+		scanf("%d", &node);
+		node--;
+
+		for (int i = 0; i < roadCount; i++)
+		{
+			if (set[i].a==node||set[i].b==node)
+			{
+				continue;
+			}
+			else
+			{
+				_union(set[i].a, set[i].b, pre);
+			}
+		}
+		int d = 0;
+		for (int i = 0; i < cityCount; i++)
+		{
+			if (i==node)
+			{
+				continue;
+			}
+			int  fx = find(i, pre);
+			if (!vis[fx])
+			{
+				vis[fx] = true;
+				d++;
+			}
+		}
+		printf("%d\n", d - 1);
+	}
+	return 0;
+}

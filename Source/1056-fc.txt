@@ -1,0 +1,149 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<stack>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#include<queue>
+#define ll long long
+using namespace std;
+struct node {
+	int num;
+	int weight;
+	int rank=0;
+};
+int rankList[10000] = {0};
+vector<node> v;
+queue <node> q;
+void check(vector<node> &v1,int rank) {
+	int length = v1.size();
+	int max = -1;
+	for (int i = 0; i < length; i++)
+	{
+		if (v1[i].weight>max)
+		{
+			max = v1[i].weight;
+		}
+	}
+	for (int i = 0; i < length; i++)
+	{
+		if (v1[i].weight==max)
+		{
+			v[v1[i].num].rank = rank+1;
+			q.push(v[v1[i].num]);
+		}
+		else
+		{
+			v[v1[i].num].rank = rank;
+			rankList[rank]++;
+		}
+	}
+}
+int check2(vector<node> &v1, int rank) {
+	int length = v1.size();
+	int max = -1;
+	int res = rank;
+	for (int i = 0; i < length; i++)
+	{
+		if (v1[i].weight > max)
+		{
+			max = v1[i].weight;
+		}
+	}
+	for (int i = 0; i < length; i++)
+	{
+		if (v1[i].weight == max)
+		{
+			v[v1[i].num].rank = rank + 1;
+			rankList[rank+1]++;
+			res = rank + 1;
+		}
+		else
+		{
+			v[v1[i].num].rank = rank;
+			rankList[rank]++;
+		}
+	}
+	return res;
+}
+
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length, span;
+	cin >> length >> span;
+	for (int i = 0; i < length; i++)
+	{
+		node n;
+		cin >> n.weight;
+		n.num = i;
+		v.push_back(n);
+	}
+
+	for (int i = 0; i < length; i++)
+	{
+		int j;
+		cin >> j;
+		q.push(v[j]);
+	}
+
+	int rank = 0;
+	vector<node> tmp;
+	int count = 0;
+	while (q.size()!=0)
+	{
+		if (count==span)
+		{
+			check(tmp, rank);
+			tmp.clear();
+			count = 0;
+		}
+		else if (q.front().rank!=rank)
+		{
+			if (tmp.size()!=0)
+			{
+				check(tmp, rank);
+				tmp.clear();
+				count = 0;		
+			}
+			rank++;
+		}
+		else
+		{
+			tmp.push_back(q.front());
+			q.pop();
+			count++;
+		}
+	}
+	int maxRank;
+	if (tmp.size()!=0)
+	{
+		maxRank=check2(tmp, rank);
+	}
+
+	int sum = 1;
+	for (int i = maxRank; i >-1; i--)
+	{
+		int tmp = rankList[i];
+		rankList[i] = sum;
+		sum += tmp;
+	}
+
+	for (int i = 0; i < length; i++)
+	{
+		if (i!=length-1)
+		{
+			printf("%d ", rankList[v[i].rank]);
+		}
+		else
+		{
+			printf("%d", rankList[v[i].rank]);
+		}
+	}
+	return 0;
+}

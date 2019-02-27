@@ -1,0 +1,171 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#define ll long long
+using namespace std;
+struct node {
+	node *left;
+	node *right;
+	int content;
+};
+vector<int> nlr;
+vector<int> nrl;
+vector<int> posto;
+
+void insert(node *t, int element) {
+	if (element>=t->content)
+	{
+		if (t->right==nullptr)
+		{
+			t->right = new node();
+			t->right->content = element;
+		}
+		else
+		{
+			insert(t->right, element);
+		}
+	}
+	else
+	{
+		if (t->left==nullptr)
+		{
+			t->left = new node();
+			t->left->content = element;
+		}
+		else
+		{
+			insert(t->left, element);
+		}
+	}
+}
+
+void NLR(node *t) {
+	nlr.push_back(t->content);
+	if (t->left!=nullptr)
+	{
+		NLR(t->left);
+	}
+	if (t->right!=nullptr)
+	{
+		NLR(t->right);
+	}
+}
+void NRL(node *t) {
+	nrl.push_back(t->content);
+	if (t->right != nullptr)
+	{
+		NRL(t->right);
+	}
+	if (t->left != nullptr)
+	{
+		NRL(t->left);
+	}
+}
+void LRN(node *t) {
+	if (t->left != nullptr)
+	{
+		LRN(t->left);
+	}
+	if (t->right != nullptr)
+	{
+		LRN(t->right);
+	}
+	posto.push_back(t->content);
+}
+void RLN(node *t) {
+	if (t->right != nullptr)
+	{
+		RLN(t->right);
+	}
+	if (t->left != nullptr)
+	{
+		RLN(t->left);
+	}
+	posto.push_back(t->content);
+}
+
+
+
+
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	node *s=new node();
+	int length;
+	cin >> length;
+	int* origin = new int[length];
+
+
+
+	cin >> origin[0];
+	s->content = origin[0];
+
+	for (int i = 1; i < length; i++)
+	{
+		cin >> origin[i];
+		insert(s, origin[i]);
+	}
+	NRL(s);
+	NLR(s);
+
+	bool flag1 = true, flag2 = true;
+	for (int i = 0; i < length; i++)
+	{
+		if (nlr[i]!=origin[i])
+		{
+			flag1 = false;
+			break;
+		}
+	}
+	if (flag1)
+	{
+		cout << "YES\n";
+		LRN(s);
+		for (int i = 0; i < length;)
+		{
+			cout << posto[i];
+			i++;
+			if (i!=length)
+			{
+				cout << " ";
+			}
+		}
+		return 0;
+	}
+
+
+
+	for (int i = 0; i < length; i++)
+	{
+		if (nrl[i]!=origin[i])
+		{
+			flag2 = false;
+			break;
+		}
+	}
+	if (flag2)
+	{
+		cout << "YES\n";
+		RLN(s);
+		for (int i = 0; i < length;)
+		{
+			cout << posto[i];
+			i++;
+			if (i != length)
+			{
+				cout << " ";
+			}
+		}
+		return 0;
+	}
+
+	cout << "NO";
+	return 0;
+}

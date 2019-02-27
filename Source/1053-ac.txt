@@ -1,0 +1,87 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+using namespace std;
+struct node{
+    int weight;
+    vector<int> child;
+}*tree;
+int node_count, length,des_weight;
+
+vector<vector<int>> paths;
+
+void dfs(int root,vector<int>& v,int weight){
+    v.push_back(tree[root].weight);
+    weight+=tree[root].weight;
+    int s=tree[root].child.size();
+    if(tree[root].child.size()==0){
+        if(weight==des_weight){
+            vector<int> d(v);
+            paths.push_back(d);
+        }
+        v.pop_back();
+        weight-=tree[root].weight;
+        return;
+    }
+    for(auto &it:tree[root].child){
+        dfs(it,v,weight);
+    }
+    v.pop_back();
+    weight-=tree[root].weight;
+}
+
+bool cmp(const vector<int> &a,const vector<int> &b){
+    int as=a.size();
+    int bs=b.size();
+    int length=min(as,bs);
+    for(int i=0;i<length;i++){
+        if(a[i]!=b[i])return a[i]>b[i];
+    };
+    return as>bs;
+}
+
+
+int main()
+{
+	freopen("data.txt", "r", stdin);
+
+    cin>>node_count>>length>>des_weight;
+
+    tree=new node[node_count];
+    for(int i=0;i<node_count;i++){
+        cin>>tree[i].weight;
+    }
+    for(int i=0;i<length;i++){
+        int a,b;
+        cin>>a >>b;
+        for(int j=0;j<b;j++){
+            int tmp;
+            cin>>tmp;
+            tree[a].child.push_back(tmp);
+        }
+    }
+
+
+    vector<int> boo;
+    dfs(0,boo,0);
+
+    sort(paths.begin(),paths.end(),cmp);
+    for(auto &it:paths){
+        int len=it.size();
+        for(int i=0;i<len;i++){
+            if(i==(len-1)){
+                printf("%d\n",it[i]);
+            }
+            else{
+                printf("%d ",it[i]);
+            }
+        }
+    }
+	return 0;
+}

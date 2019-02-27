@@ -1,0 +1,63 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#define ll long long
+using namespace std;
+bool cmp(const string& a, const string&b) {
+	for (int i = 0; i < 4; i++)
+	{
+		if (a[i]==b[i])
+		{
+			continue;
+		}
+		if (a[i]<b[i])
+		{
+			return true;
+		}
+		else if (a[i]>b[i])
+		{
+			return false;
+		}
+	}
+	return false;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int stuNum, courseNum;
+	cin >> stuNum >> courseNum;
+	vector<string>* d = new vector<string>[courseNum];
+	for (int i = 0; i < stuNum; i++)
+	{
+		getchar();
+		string tmp;
+		cin >> tmp;
+		int length;
+		cin >> length;
+		for (int j = 0; j < length; j++)
+		{
+			int course;
+			cin >> course;
+			d[course-1].push_back(tmp);
+		}
+	}
+
+	for (int i = 0; i < courseNum; i++)
+	{
+		int size=d[i].size();
+		printf("%d %d\n", i + 1, d[i].size());
+		sort(d[i].begin(), d[i].end(), cmp);
+		for (int j = 0; j < size; j++)
+		{
+			printf("%s\n", d[i][j].c_str());
+		}
+	}
+	return 0;
+}

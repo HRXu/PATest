@@ -1,0 +1,52 @@
+#include <iostream>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+#include<map>
+#include<set>
+using namespace std;
+struct node{
+    int addr;
+    int data;
+    int next;
+};
+int _data[100000];
+int _next[100000];
+int main()
+{
+    freopen("data.txt","r",stdin);
+    int start,length,span;
+    scanf("%d %d %d",&start,&length,&span);
+
+    for(int i=0;i<length;i++){
+        int a,d,n;
+        scanf("%d %d %d",&a,&d,&n);
+        _data[a]=d;
+        _next[a]=n;
+    }
+
+    vector<node> v;
+    for(int i=start;i!=-1;i=_next[i]){
+        node n;
+        n.addr=i;
+        n.data=_data[i];
+        n.next=_next[i];
+        v.push_back(n);
+    }
+
+    length=v.size();
+    vector<node>::iterator itor= v.begin();
+    for(int i=0;i+span<=length;){
+        reverse(itor,itor+span);
+        itor+=span;i+=span;
+    }
+
+    for(int i=0;i<length;i++){
+        if(i==length-1){
+            printf("%05d %d -1\n",v[i].addr,v[i].data);
+            break;
+        }
+        printf("%05d %d %05d\n",v[i].addr,v[i].data,v[i+1].addr);
+    }
+    return 0;
+}

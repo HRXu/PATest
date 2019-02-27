@@ -1,0 +1,54 @@
+#include <iostream>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+#include<map>
+#include<set>
+#include<cmath>
+using namespace std;
+
+struct node{
+    vector<int> child;
+    int amount;
+}*ls;
+int length;double root_price, incremnt,sum=0;
+
+void dfs(int num,int level){
+    if(ls[num].child.size()==0){
+        sum+=ls[num].amount*pow(incremnt+1,level);
+        return;
+    }
+    else{
+        for(auto& it:ls[num].child){
+            dfs(it,level+1);
+        }
+    }
+}
+
+int main()
+{
+    //freopen("data.txt","r",stdin);
+
+    scanf("%d %lf %lf",&length,&root_price,&incremnt);
+    incremnt*=0.01;
+
+    ls=new node[length];
+
+    for (int i=0;i<length;i++){
+        int tmp;
+        scanf("%d",&tmp);
+        if(tmp==0){
+            scanf("%d",&ls[i].amount);
+           continue;
+        }
+        for(int j=0;j<tmp;j++){
+            int foo;
+            scanf("%d",&foo);
+            ls[i].child.push_back(foo);
+        }
+    }
+
+    dfs(0,0);
+    printf("%0.1f",sum*root_price);
+    return 0;
+}

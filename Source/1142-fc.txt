@@ -1,0 +1,89 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+using namespace std;
+
+int **d;
+int node_count,edge_count;
+bool* vis;
+bool isClique(vector<int> &v){
+    int len=v.size();
+    for(int i=0;i<len;i++){
+        for(int j=i;j<len;j++){
+            if(!d[v[i]][v[j]]) return false;
+        }
+    }
+    return true;
+}
+
+bool isMax(vector<int> &v){
+    memset(vis,0,sizeof(bool)*node_count);
+    int len=v.size();
+    for(auto &it:v){
+        vis[it]=true;
+    }
+    for(int i=0;i<node_count;i++){
+        if(!vis[i]){
+            bool flag=true;
+            for(auto &it2:v){
+                if(d[it2][i]==0){
+                    flag=false;
+                    break;
+                }
+            }
+            if(flag){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>node_count>>edge_count;
+    d=new int*[node_count];
+    vis=new bool[node_count];
+    for(int i=0;i<node_count;i++){
+        d[i]=new int[node_count];
+        memset(d[i],0,sizeof(int)*node_count);
+        d[i][i]=1;
+    }
+    for(int i=0;i<edge_count;i++){
+        int a,b;
+        cin>>a>>b;
+        d[a-1][b-1]=1;
+        d[b-1][a-1]=1;
+    }
+
+    int case_count;
+    cin>>case_count;
+    for(int i=0;i<case_count;i++){
+        int k;
+        cin>>k;
+        vector<int> tmp;
+        for(int j=0;j<k;j++){
+            int foo;
+            cin>>foo;
+            tmp.push_back(foo-1);
+        }
+        if(isClique(tmp)){
+            if(isMax(tmp)){
+                printf("Yes\n");
+            }
+            else{
+                printf("Not Maximal\n");
+            }
+        }
+        else{
+            printf("Not a Clique\n");
+        }
+    }
+	return 0;
+}

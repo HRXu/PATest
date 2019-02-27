@@ -1,0 +1,69 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+using namespace std;
+struct Rational {
+	long long n;
+	long long dn;
+};
+
+long long gcd(long long a, long long b) {
+	return b == 0 ? a : gcd(b, a%b);
+}
+
+void add(Rational& a,Rational& b){
+    long long foo=gcd(abs(a.dn),abs(b.dn));
+    long long tmp=a.dn*b.dn/foo;
+    a.n=(a.n*(tmp/a.dn))+(b.n*(tmp/b.dn));
+    a.dn=tmp;
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+	int count;
+	scanf("%d", &count);
+	getchar();
+	Rational *s = new Rational[count];
+
+	for (int i = 0; i < count; i++)
+	{
+	    scanf("%lld/%lld",&s[i].n,&s[i].dn);
+	}
+
+	//通分相加
+	for (int i = 1; i < count; i++)
+	{
+        add(s[0],s[i]);
+	}
+
+	Rational res=s[0];
+	//约分
+	long long _gcd = gcd(abs(res.dn), abs(res.n));
+	res.dn /= _gcd;
+	res.n /= _gcd;
+
+	long long a=res.n/res.dn;
+	if(a!=0){
+        if(res.n%res.dn==0){
+            cout<<a;
+            return 0;
+        }
+        else{
+            cout<<a<<" ";
+            res.n=abs(res.n%res.dn);
+        }
+	}
+
+	if(res.n==0){
+        cout<<"0";
+        return 0;
+	}
+	cout << res.n;
+	cout << "/";
+	cout << res.dn;
+	return 0;
+}

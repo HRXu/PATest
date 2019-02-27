@@ -1,0 +1,75 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+using namespace std;
+struct node {
+	string name;
+	bool hasPicked=false;
+};
+vector<node> v;
+vector<string> inputlist;
+void add(node &n) {
+	int count = v.size();
+	for (int i = 0; i < count; i++)
+	{
+		if (v[i].name==n.name)
+		{
+			return;
+		}
+	}
+	v.push_back(n);
+}
+int check(string n) {
+	bool res = false;
+	int count = v.size();
+	for (int i = 0; i < count; i++)
+	{
+		if (v[i].name == n)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+int main()
+{
+	int count, skip, begin;
+	cin >> count >> skip >> begin;
+
+	for (int i = 0; i < count; i++)
+	{
+		node s;
+		cin >> s.name;
+		inputlist.push_back(s.name);
+		add(s);
+	}
+	int num = 0;
+	for (int i = begin-1;;)
+	{
+		if (i>=count)
+		{
+			break;
+		}
+		int c = check(inputlist[i]);
+		if (v[c].hasPicked)
+		{
+			i++;
+			continue;
+		}
+		cout << v[c].name << endl;
+		i += skip;
+		num++;
+		v[c].hasPicked = true;
+	}
+	if (num==0)
+	{
+		cout << "Keep going...";
+		return 0;
+	}
+	return 0;
+}

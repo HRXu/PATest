@@ -1,0 +1,67 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<stack>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#include<queue>
+#include<set>
+#define ll long long
+using namespace std;
+vector<set<int>> v;
+void cmp(int a,int b) {
+	set<int> &l1 = v[a-1];
+	set<int> &l2 = v[b-1];
+
+	float common = 0;
+	auto end2 = l2.end();
+	auto end1 = l1.end();
+	
+	int sum = l1.size();
+	for (auto i = l2.begin();i!=end2 ; ++i)
+	{	
+		if (l1.find(*i)!=end1)
+		{
+			common++;
+		}
+		else
+		{
+			sum++;
+		}
+	}
+	printf("%0.1f%%\n", (common /sum)*100);
+	return;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length;
+	scanf("%d", &length);
+	for (int i = 0; i < length; i++)
+	{
+		int count;
+		scanf("%d", &count);
+		set<int> l;
+		for (int j = 0; j < count; j++)
+		{
+			int tmp;
+			scanf("%d", &tmp);
+			l.insert(tmp);
+		}
+		v.push_back(l);
+
+	}
+	cin >> length;
+	for (int i = 0; i < length; i++)
+	{
+		int a, b;
+		cin >> a>> b;
+		cmp(a, b);
+	}
+	return 0;
+}

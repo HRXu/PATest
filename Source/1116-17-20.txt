@@ -1,0 +1,92 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+using namespace std;
+typedef struct node {
+	bool isChecked = false;
+	int rank;
+	int ID;
+};
+bool IsPrime(int d) {
+	if (d==1)
+	{
+		return false;
+	}
+	int c = (int)sqrt((double)d);
+	for (int i = 2; i <= c; i++)
+	{
+		if (d%c==0)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+int Search(int ID,vector<node>& list)
+{
+	int count = list.size();
+	for (int i = 0; i < count; i++)
+	{
+		if (list[i].ID==ID)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+int main(){
+	vector<node> list;
+	int countA;
+	scanf("%d", &countA);
+	getchar();
+	for (int i = 0; i <countA; i++)
+	{
+		node b;
+		scanf("%d", &b.ID);
+		list.push_back(b);
+	}
+
+	int countB;
+	scanf("%d", &countB);
+	for (int i = 0; i < countB; i++)
+	{
+		int ID;
+		scanf("%d", &ID);
+		int res = Search(ID, list);
+		if (res == -1)
+		{
+			printf("%04d: Are you kidding?\n", ID);
+		}
+		else if (list[res].isChecked)
+		{
+			printf("%04d: Checked\n",ID);
+		}
+		else if(res==0)
+		{
+			printf("%04d: Mystery Award\n",ID);
+//			cout << ID << ": Mystery Award" << endl;
+			list[res].isChecked = true;
+		}
+		else
+		{
+			if (IsPrime(res+1))
+			{
+				printf("%04d: Minion\n",ID);
+				//cout << ID << ": Minion" << endl;
+				list[res].isChecked = true;
+			}
+			else
+			{
+				printf("%04d: Chocolate\n", ID);
+				//cout << ID << ": Chocolate" << endl;
+				list[res].isChecked = true;
+			}
+		}
+	}
+	return 0;
+}

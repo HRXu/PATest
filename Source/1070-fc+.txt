@@ -1,0 +1,49 @@
+#include <iostream>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+using namespace std;
+struct node{
+    float inventory;
+    float pprice;
+};
+vector<node> v;
+
+bool cmp(const node& a,const node& b){
+    return a.pprice>b.pprice;
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+    int cnt;
+    float demand;
+    cin>>cnt>>demand;
+    for (int i=0;i<cnt;i++){
+        node n;
+        cin>>n.inventory;
+        v.push_back(n);
+    }
+    for (int i=0;i<cnt;i++){
+        cin>>v[i].pprice;
+        v[i].pprice=v[i].pprice/(v[i].inventory);
+    }
+
+    sort(v.begin(),v.end(),cmp);
+
+    float price=0;
+    float rest=demand;
+    for(int i=0;i<cnt;i++){
+        float tmp=rest-v[i].inventory;
+        if(tmp>=0){
+            price+=v[i].inventory*v[i].pprice;
+            rest=tmp;
+        }
+        else if(tmp<0){
+            price+=rest*v[i].pprice;
+            break;
+        }
+    }
+
+    printf("%0.2f",price);
+    return 0;
+}

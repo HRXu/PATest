@@ -1,0 +1,52 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+
+using namespace std;
+int inverse(int i) {
+	int res = i;
+	int a1, a2, a3, a4;
+	a1 = res / 1000;
+	res = res % 1000;
+	a2 = res / 100;
+	res %= 100;
+	a3 = res / 10;
+	res %= 10;
+	a4 = res;
+	return a4 * 1000 + a3 * 100 + 10 * a2 + a1;
+}
+int inc(int i) {
+	int c[4];
+	int res=i;
+	c[0] = res / 1000;
+	res = res % 1000;
+	c[1] = res / 100;
+	res %= 100;
+	c[2] = res / 10;
+	res %= 10;
+	c[3] = res;
+	sort(c, c + 4);
+	return c[0]+c[1]*10+c[2]*100+c[3]*1000;
+}
+int main() 
+{
+	int n,temp,res;
+	scanf("%d", &n);
+	n = inc(n);
+	while (true)
+	{
+		temp = inverse(n);
+		res = n - temp;
+		printf("%04d - %04d = %04d\n", n,temp,res);
+		if (res==0 ||res==6174)
+		{
+			break;
+		}
+		n = inc(res);
+	}
+	return 0;
+}

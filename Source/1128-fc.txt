@@ -1,0 +1,66 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+using namespace std;
+bool Aru(int *arr, int column,int row,int length) {
+	//◊ÛœÚ
+	for (int j = column-1,i=1; j >=0;j--,i++)
+	{
+		if (arr[j]==row-i || arr[j]==row+i ||arr[j]==row)
+		{
+			return false;
+		}
+	}
+	//”“œÚ
+	for (int j = column+1,i=1; j < length; j++,i++)
+	{
+		if (arr[j]==row-i ||arr[j]==row+i|| arr[j] == row)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+bool check(int *arr, int length) {
+	for (int i = 0; i < length; i++)
+	{
+		if (!Aru(arr,i,arr[i],length))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+int main()
+{
+	int line;
+	scanf("%d", &line);
+	getchar();
+	for (int i = 0; i < line; i++)
+	{
+		int count;
+		cin >> count;
+		int arr[9];
+		//int * arr = new int[count];
+		for (int j = 0; j < count; j++)
+		{
+			cin >> arr[j];
+			arr[j]--;
+		}
+		if (check(arr, count))
+		{
+			cout << "YES" << endl;
+		}
+		else
+		{
+			cout << "NO" << endl;
+		}
+		getchar();
+	}
+	return 0;
+}

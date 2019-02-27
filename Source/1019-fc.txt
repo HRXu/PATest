@@ -1,0 +1,57 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+using namespace std;
+vector<int> v;
+void chin(ll tmp, ll base) {
+	while (true)
+	{
+		v.push_back(tmp % base);
+		tmp /= base;
+		if (tmp==0)
+		{
+			break;
+		}
+	}
+}
+void check() {
+	int count = v.size();
+	bool flag = true;
+	for (int i = 0; i < count/2; i++)
+	{
+		if (v[i]!=v[count-i-1])
+		{
+			flag = false;
+		}
+	}
+	if (flag)
+	{
+		cout << "Yes" << endl;
+	}
+	else
+	{
+		cout << "No" << endl;
+	}
+	for (int i = count - 1; i >= 0; i--)
+	{
+		cout << v[i];
+		if (i!=0)
+		{
+			cout << " ";
+		}
+	}
+}
+int main()
+{
+    ll count, base;
+	cin >> count>> base;
+	chin(count, base);
+	check();
+	return 0;
+}

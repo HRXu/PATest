@@ -1,0 +1,58 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+using namespace std;
+typedef struct
+{
+	char s;
+	int count=0;
+}node;
+void add(vector<node> &d,char n) {
+	int rear = d.size()-1;
+	if (rear==-1 ||d[rear].s!=n)
+	{
+		node tmp;
+		tmp.s = n;
+		tmp.count++;
+		d.push_back(tmp);
+	}
+	else
+	{
+		d[rear].count++;
+	}
+	return;
+}
+string Next(string& now) {
+	vector<node> d;
+	int count = now.size();
+	char n = now[0];
+	for (int i = 0; i < count; i++)
+	{
+		add(d, now[i]);
+	}
+	string res;
+	count = d.size();
+	for (int i = 0; i < count; i++)
+	{
+		res += d[i].s;
+		res += to_string(d[i].count);
+	}
+	return res;
+}
+int main()
+{
+	string num;int count;
+	cin >> num >> count;
+	count--;
+	for (int i = 0; i < count; i++)
+	{
+		num = Next(num);
+	}
+	cout << num;
+	return 0;
+}

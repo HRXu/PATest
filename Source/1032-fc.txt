@@ -1,0 +1,51 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+#define St 8*3600
+using namespace std;
+struct node {
+	char node;
+	bool hasVisited=false;
+	int next;
+};
+node total[100000];
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int start1, start2,length;
+	cin >> start1 >> start2 >> length;
+	for (int i = 0; i < length; i++)
+	{
+		int tmp, foo; char c;
+		cin >> tmp >> c >> foo;
+		total[tmp].node = c;
+		total[tmp].next = foo;
+	}
+
+	for (int i = start1; i!=-1; i=total[i].next)
+	{
+		total[i].hasVisited = true;
+	}
+
+	int j = start2;
+	for (; j!=-1 ; j=total[j].next)
+	{
+		if (total[j].hasVisited)
+		{
+			break;
+		}
+	}
+	if (j==-1)
+	{
+		cout << "-1";
+		return 0;
+	}
+	printf("%05d", j);
+	return 0;
+}

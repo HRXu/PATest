@@ -1,0 +1,130 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<cmath>
+#include<regex>
+#include<queue>
+#include<set>
+#include<map>
+using namespace std;
+struct _time{
+    int month;
+    int day;
+    int hour;
+    int minute;
+};
+int fee[24];
+double calculate(const _time* a,const _time* b){
+    int total_a=a->day*24*60+a->hour*60+a->minute;
+    int total_b=b->day*24*60+b->hour*60+b->minute;
+    double af=0;
+    int hours=total_a/60;
+    for(int i=0;i<hours;i++){
+        af+=fee[i%24]*60;
+    }
+    af+=fee[hours%24]*(total_a%60);
+
+    double bf=0;
+    hours=total_b/60;
+    for(int i=0;i<hours;i++){
+        bf+=fee[i%24]*60;
+    }
+    bf+=fee[hours%24]*(total_b%60);
+    return (af-bf)/100;
+}
+
+struct customer{
+    string name;
+    int month;
+    int day;
+    int hour;
+    int minute;
+    bool on_line;
+};
+bool cmp(const customer&a,const customer&b){
+    if(a.day==b.day){
+        if(a.hour==b.hour){
+            return a.minute<b.minute;
+        }
+        return a.hour<b.hour;
+    }
+    return a.day<b.day;
+}
+
+struct _log{
+    _time a;
+    _time b;
+    double cost;
+    int total;
+};
+map<string,vector<_log>> mp;
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	for(int i=0;i<24;i++){
+        cin>>fee[i];
+	}
+	int length;
+	cin>>length;
+    customer* customers=new customer[length];
+    int month;
+	for(int i=0;i<length;i++){
+        string s;
+        cin>>customers[i].name;
+        scanf("%d:%d:%d:%d",&month,&customers[i].day,&customers[i].hour,&customers[i].minute);
+        cin>>s;
+        if(s.size()==7){
+            customers[i].on_line=true;
+        }
+        else{
+            customers[i].on_line=false;
+        }
+	}
+	sort(customers,customers+length,cmp);
+	bool* mark=new bool[length];
+	memset(mark,0,length*sizeof(bool));
+	for(int i=0;i<length;i++){
+        if(mark[i]) continue;
+        if(!customers[i].on_line){mark[i]=1;continue;}
+        int j=i;
+        mark[i]=1;
+
+        int bgn=i;
+        for(;j<length;j++){
+            if(mark[j])continue;
+            if(customers[bgn].name==customers[j].name){
+                if(!customers[j].on_line)break;
+                mark[j]=1;
+                bgn=j;
+            }
+        }
+        if(j==length)continue;
+        mark[j]=1;
+        _log foo;
+        foo.a.day=customers[bgn].day;
+        foo.a.hour=customers[bgn].hour;
+        foo.a.minute=customers[bgn].minute;
+
+        foo.b.day=customers[j].day;
+        foo.b.hour=customers[j].hour;
+        foo.b.minute=customers[j].minute;
+
+        foo.cost=calculate(&foo.b,&foo.a);
+        foo.total=(foo.b.day*24*60+foo.b.hour*60+foo.b.minute)-(foo.a.day*24*60+foo.a.hour*60+foo.a.minute);
+        mp[customers[i].name].push_back(foo);
+	}
+	for(auto &it:mp){
+        printf("%s %02d\n",it.first.c_str(),month);
+        double sum=0;
+        for(auto &it2:it.second){
+            printf("%02d:%02d:%02d %02d:%02d:%02d ",it2.a.day,it2.a.hour,it2.a.minute,it2.b.day,it2.b.hour,it2.b.minute);
+            printf("%d $%0.2f\n",it2.total,it2.cost);
+            sum+=it2.cost;
+        }
+        printf("Total amount: $%0.1f\n",sum);
+	}
+	return 0;
+}

@@ -1,0 +1,131 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+#include<queue>
+using namespace std;
+
+struct node{
+    int id;
+    int left=-1;
+    int right=-1;
+}*tree;
+int _a1=0;
+int alloc(){
+    _a1++;
+    return _a1-1;
+}
+int node_count,query_count;
+void _insert(int root,int i){
+    if(i<tree[root].id){
+        if(tree[root].left==-1){
+            int tmp=alloc();
+            tree[tmp].id=i;
+            tree[root].left=tmp;
+        }
+        else{
+            _insert(tree[root].left,i);
+        }
+    }
+    else{
+        if(tree[root].right==-1){
+            int tmp=alloc();
+            tree[tmp].id=i;
+            tree[root].right=tmp;
+        }
+        else{
+            _insert(tree[root].right,i);
+        }
+    }
+}
+
+int res;
+int *pre;
+int pos_a=-1,pos_b=-1;
+bool return_flag=false;
+int _find(int a){
+    if(pre[a]==a)return a;
+    return _find(pre[a]);
+}
+void dfs(int root,int a,int b){
+    if(root==-1)return;
+    if(tree[root].id==a){
+        pos_a=root;
+        if(pos_b!=-1){
+            res=_find(pos_b);
+            return_flag=true;
+            return;
+        }
+    }
+    else if(tree[root].id==b){
+        pos_b=root;
+        if(pos_a!=-1){
+            res=_find(pos_a);
+            return_flag=true;
+            return;
+        }
+    }
+    if(tree[root].left!=-1||!return_flag) {
+        dfs(tree[root].left,a,b);
+        pre[tree[root].left]=root;
+    }
+    if(tree[root].right!=-1||!return_flag){
+        dfs(tree[root].right,a,b);
+        pre[tree[root].right]=root;
+    }
+    return;
+}
+void lca(int a,int b,int root){
+    pos_a=-1,pos_b=-1;return_flag=false;
+    for(int i=0;i<node_count;i++){
+        pre[i]=i;
+    }
+    dfs(root,a,b);
+
+    if(pos_a==-1){
+        if(pos_b==-1){
+            printf("ERROR: %d and %d are not found.\n",a,b);
+        }
+        else printf("ERROR: %d is not found.\n",a);
+    }
+    else if(pos_b==-1){
+        printf("ERROR: %d is not found.\n",b);
+    }
+    else if(tree[res].id==a){
+        printf("%d is an ancestor of %d.\n",a,b);
+    }
+    else if(tree[res].id==b){
+        printf("%d is an ancestor of %d.\n",b,a);
+    }
+    else{
+        printf("LCA of %d and %d is %d.\n",a,b,tree[res].id);
+    }
+}
+
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>query_count>>node_count;
+    int d;
+    cin>>d;
+    tree=new node[node_count];
+    tree[alloc()].id=d;
+    for(int i=1;i<node_count;i++){
+        int a;
+        scanf("%d",&a);
+        _insert(0,a);
+    };
+    pre=new int[node_count];
+    for(int i=0;i<query_count;i++){
+        int a,b;
+        scanf("%d %d",&a,&b);
+        lca(a,b,0);
+    }
+    return 0;
+}

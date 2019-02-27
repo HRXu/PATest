@@ -1,0 +1,131 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+using namespace std;
+
+struct node{
+    int left=-1;
+    int right=-1;
+}*tree;
+int case_count,node_count;
+int *pre_order,*in_order;
+
+int *pos;
+int build(int _begin,int _end){
+    if(_begin>_end) return -1;
+    if(_begin==_end) return in_order[_end];
+    memset(pos,-1,sizeof(int)*node_count);
+
+    for(int i=_begin;i<=_end;i++){
+        pos[in_order[i]]=i;
+    }
+    int j=0;
+    for(;j<node_count;j++){
+        if(pos[pre_order[j]]!=-1)break;
+    }
+    int root=pre_order[j];
+    int _pos=pos[root];
+
+    tree[root].left=build(_begin,_pos-1);
+    tree[root].right=build(_pos+1,_end);
+    return root;
+};
+
+int *pre;
+int *vis;
+int _find(int i){
+    if(pre[i]==i) return i;
+    return _find(pre[i]);
+}
+void dfs(int root,int a,int b,int &res){
+    if(root==-1)return;
+    vis[root]=true;
+    if(root==a){
+        if(vis[b]){
+            res=_find(b);
+        }
+    }
+    else if(root==b){
+        if(vis[a]){
+            res=_find(a);
+        }
+    }
+    dfs(tree[root].left,a,b,res);
+    pre[tree[root].left]=root;
+    dfs(tree[root].right,a,b,res);
+    pre[tree[root].right]=root;
+}
+void _search(int a,int b,int root){
+
+    if(a<0 ||a>=node_count){
+        if(b<0 ||b>=node_count){
+            printf("ERROR: %d and %d are not found.\n",a+1,b+1);
+            return;
+        }
+        else{
+            printf("ERROR: %d is not found.\n",a+1);
+            return;
+        }
+    }
+    else if(b<0||b>=node_count){
+            printf("ERROR: %d is not found.\n",b+1);
+            return;
+    }
+    if(a==b){
+        printf("LCA of %d and %d is %d.\n",a+1,b+1,a+1);
+        return;
+    }
+
+    int res=0;
+    memset(vis,0,sizeof(int)*node_count);
+    for(int i=0;i<node_count;i++){
+        pre[i]=i;
+    }
+
+    dfs(root,a,b,res);
+    if(res==a){
+        printf("%d is an ancestor of %d.\n",a+1,b+1);
+    }
+    else if(res==b){
+        printf("%d is an ancestor of %d.\n",b+1,a+1);
+    }
+    else{
+        printf("LCA of %d and %d is %d.\n",a+1,b+1,res+1);
+    }
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>case_count>>node_count;
+    tree=new node[node_count];
+    pre_order=new int[node_count];
+    in_order=new int[node_count];
+    pos=new int[node_count];
+
+    for(int i=0;i<node_count;i++){
+        cin >>in_order[i];
+        in_order[i]--;
+    }
+    for(int i=0;i<node_count;i++){
+        cin >>pre_order[i];
+        pre_order[i]--;
+    }
+    int root=build(0,node_count-1);
+
+    pre=new int[node_count];
+    vis=new int[node_count];
+    for(int i=0;i<case_count;i++){
+        int a;int b;
+        cin>>a>>b;
+        a--;b--;
+        _search(a,b,root);
+    }
+	return 0;
+}

@@ -1,0 +1,56 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+using namespace std;
+
+struct node{
+	vector<int> child;
+	int level;
+};
+int *gen;
+vector<node> v;
+
+int _max=-1;
+int generation;
+void dfs(int root,int level){
+    gen[level]++;
+    if(_max<=gen[level]){
+        _max=gen[level];
+        generation=level;
+    }
+	if(v[root].child.size()==0){
+		return;
+	}
+	for(auto& it: v[root].child){
+        dfs(it,level+1);
+	}
+}
+
+
+int main()
+{
+	freopen("data.txt","r",stdin);
+	int count,length;
+	cin>>count>>length;
+	v.resize(count);
+	gen=new int[count];
+    memset(gen,0,count*sizeof(int));
+
+	for(int i=0;i<length;i++){
+		int foo,tmp;
+		cin>>foo>>tmp;
+		for(int j=0;j<tmp;j++){
+			int bar;
+			cin>>bar;
+			v[foo-1].child.push_back(bar-1);
+		}
+	}
+
+    dfs(0,1);
+	printf("%d %d",_max,generation);
+
+	return 0;
+}

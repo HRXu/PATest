@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1551250308 source:c:\users\wella\documents\pat\pat\main.cpp
+	<iostream>
+	<cstdio>
+	<string>
+	<vector>
+	<algorithm>
+	<math.h>
+	<regex>
+	<set>
+	<queue>
+

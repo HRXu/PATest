@@ -1,0 +1,64 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+#define St 8*3600
+using namespace std;
+int main()
+{
+	string table[] = { "MON","TUE","WED","THU","FRI","SAT","SUN" };
+	freopen("data.txt", "r", stdin);
+	string s1, s2, s3 ,s4;
+	cin >> s1 >> s2 >> s3 >> s4;
+	vector<char> common;
+
+	int countS1 = s1.size();
+	int countS2 = s2.size();
+	countS1 = countS1 > countS2 ? countS2 : countS1;
+	int i = 0;
+	for (; i < countS1; i++)
+	{
+		if (s1[i]==s2[i] &&s1[i] >= 'A'&&s1[i] <= 'G')
+		{
+			cout << table[s1[i] - 'A'];
+			break;
+		}
+	}
+	for (i++; i < countS1; i++)
+	{
+		if (s1[i] == s2[i] && ((s1[i]>='A'&&s1[i]<='N')||isdigit(s1[i])))
+		{
+			common.push_back(s1[i]);
+			break;
+		}
+	}
+
+	int countS3 = s3.size();
+	int countS4 = s4.size();
+	countS3 = countS3 > countS4 ? countS4 : countS3;
+	int i1=0;
+	for (; i1 < countS3; i1++)
+	{
+		if (s3[i1] == s4[i1] && isalpha(s3[i1]))
+		{
+			break;
+		}
+	}
+
+	int hours;
+	if (common[0]<='9'&&common[0]>='0')
+	{
+		hours = common[0] - '0';
+	}
+	else
+	{
+		hours=common[0] - 'A' + 10;
+	}
+	printf(" %02d:%02d",hours,i1);
+	return 0;
+}

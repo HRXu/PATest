@@ -1,0 +1,79 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+#define St 8*3600
+using namespace std;
+
+void add(vector<int> &d) {
+	int length = d.size();
+	int *reverse = new int[length];
+	for (int i = length-1,j=0; i >-1; i--,j++)
+	{
+		reverse[j] = d[i];
+	}
+	int de = 0;//½øÎ»
+	for (int i = 0; i < length; i++)
+	{
+		int tmp = d[i] + reverse[i] + de;
+		de=tmp/10;
+		d[i] = tmp % 10;
+	}
+	if (de!=0)
+	{
+		d.push_back(de);
+	}
+	free(reverse);
+}
+bool IsP(vector<int> &d) {
+	int length = d.size();
+	int c = length / 2;
+	for (int i = 0; i < c; i++)
+	{
+		if (d[i]!=d[length-i-1])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	char d[11] = {0};
+	int turn;
+	scanf("%s %d", &d, &turn);
+	vector<int> number;
+	for (int i = 10; i > -1; i--)
+	{
+		if (d[i]!=0)
+		{
+			number.push_back(d[i] - '0');
+		}
+	}
+
+	bool flag = true;
+	int index;
+	for (index = 0; index < turn; index++)
+	{
+		if (IsP(number))
+		{
+			flag = false;
+			break;
+		}
+		add(number);
+	}
+
+	int count = number.size()-1;
+	for (int i = count; i >-1; i--)
+	{
+		cout << number[i];
+	}
+	cout << "\n"<<index;
+	return 0;
+}

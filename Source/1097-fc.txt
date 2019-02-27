@@ -1,0 +1,68 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<set>
+using namespace std;
+
+struct node{
+	int next;
+	int value;
+};
+node v[100000];
+set<int> s;
+
+struct node2{
+    int addr;
+    int value;
+};
+vector<node2> v2;
+vector<node2> v3;
+
+void display(vector<node2>& tmp){
+    int length=tmp.size();
+    for(int i=0;i<length;i++)
+    {
+        if((i+1)!=length){
+            printf("%05d %d %05d\n",tmp[i].addr,tmp[i].value,tmp[i+1].addr);
+        }
+        else{
+            printf("%05d %d -1\n",tmp[i].addr,tmp[i].value);
+        }
+    }
+
+}
+
+int main()
+{
+	freopen("data.txt","r",stdin);
+	int start,length;
+	cin>>start>>length;
+
+    for(int i=0;i<length;i++){
+        int addr,key,next;
+        cin>>addr>>key>>next;
+        v[addr].value=key;
+        v[addr].next=next;
+    }
+
+    for(int i=start;i!=-1;i=v[i].next){
+        node2 n;
+        n.addr=i;
+        n.value=v[i].value;
+        if(s.find(abs(v[i].value))==s.end()){
+            s.insert(abs(v[i].value));
+            v2.push_back(n);
+        }
+        else{
+
+            v3.push_back(n);
+        }
+    }
+
+    display(v2);
+    display(v3);
+	return 0;
+}

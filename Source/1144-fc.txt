@@ -1,0 +1,50 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+using namespace std;
+int main()
+{
+	int count;
+	cin >> count;
+	int counter[100001] = {0};
+
+	for (int i = 0; i < count; i++)
+	{
+		int num;
+		cin >> num;
+		counter[i] = num;
+	}
+	sort(counter, counter+100001);
+	int index = 1;
+	for (int i = 0; i < 100001; i++)
+	{
+		if (counter[i]<=0)
+		{
+			continue;
+		}
+		else
+		{
+			if (index==counter[i])
+			{
+				index++;
+				continue;
+			}
+			else if (index>counter[i])
+			{
+				continue;
+			}
+			else
+			{
+				cout << index << endl;
+				return 0;
+			}
+		}
+	}
+	cout << counter[100000] + 1 << endl;
+	return 0;
+}

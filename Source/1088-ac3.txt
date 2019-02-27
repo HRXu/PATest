@@ -1,0 +1,140 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<cmath>
+using namespace std;
+struct Ration {
+	long long n;
+	long long dn;
+};
+void Display(Ration& a) {
+	if(a.n>0){
+        long long tmp=a.n/a.dn;
+        if(tmp==0){
+            printf("%lld/%lld",a.n,a.dn);
+        }
+        else{
+            long long foo=a.n%a.dn;
+            if(foo==0){
+                printf("%lld",tmp);
+            }
+            else{
+                printf("%lld %lld/%lld",tmp,abs(foo),a.dn);
+            }
+        }
+	}
+	else if(a.n==0){
+        printf("0");
+	}
+    else{
+        long long tmp=a.n/a.dn;
+        if(tmp==0){
+            printf("(%lld/%lld)",a.n,a.dn);
+        }
+        else{
+            long long foo=a.n%a.dn;
+            if(foo==0){
+                printf("(%lld)",tmp);
+            }
+            else{
+                printf("(%lld %lld/%lld)",tmp,abs(foo),a.dn);
+            }
+        }
+    }
+}
+long long A(long long a, long long b) {
+	return b == 0 ? a : A(b, a%b);
+}
+void Reduce(Ration &n) {
+    long long gcd = A(abs(n.dn), abs(n.n));
+	n.dn /= gcd;
+	n.n /= gcd;
+}
+void Plus(Ration a, Ration b) {
+	long long gcd = A(abs(a.dn), abs(b.dn));
+	long long cmf = a.dn/gcd*b.dn;
+	Ration res;
+	res.n = a.n*(cmf / a.dn) + b.n*(cmf / b.dn);
+	res.dn = cmf;
+	Reduce(res);
+	Reduce(a);
+	Reduce(b);
+	Display(a);
+	cout << " + ";
+	Display(b);
+	cout << " = ";
+	Display(res);
+	cout << endl;
+}
+void Minus(Ration a, Ration b) {
+    long long gcd = A(abs(a.dn), abs(b.dn));
+	long long cmf = a.dn/ gcd*b.dn ;
+	Ration res;
+	res.n = a.n*(cmf / a.dn) - b.n*(cmf / b.dn);
+	res.dn = cmf;
+	Reduce(res);
+		Reduce(a);
+	Reduce(b);
+	Display(a);
+	cout << " - ";
+	Display(b);
+	cout << " = ";
+	Display(res);
+	cout << endl;
+}
+void Mutiple(Ration a, Ration b) {
+	Ration res;
+	res.n = a.n*b.n;
+	res.dn = a.dn*b.dn;
+	Reduce(res);
+		Reduce(a);
+	Reduce(b);
+	Display(a);
+	cout << " * ";
+	Display(b);
+	cout << " = ";
+	Display(res);
+	cout << endl;
+}
+void Divide(Ration a, Ration b) {
+	if (b.n==0)
+	{
+		Display(a);
+		cout << " / 0";
+		cout << " = ";
+		cout << "Inf\n";
+	}
+	else
+	{
+		Ration res;
+		res.n = a.n*b.dn;
+		res.dn = a.dn*b.n;
+		if(res.dn<0) {
+            res.dn=-res.dn;
+            res.n=-res.n;
+		}
+		Reduce(res);
+			Reduce(a);
+	Reduce(b);
+		Display(a);
+		cout << " / ";
+		Display(b);
+		cout << " = ";
+		Display(res);
+		cout << endl;
+	}
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+	Ration a1, b1;
+	scanf("%lld/%lld %lld/%lld",&a1.n,&a1.dn,&b1.n,&b1.dn);
+	Plus(a1, b1);
+	Minus(a1, b1);
+	Mutiple(a1, b1);
+	Divide(a1, b1);
+	return 0;
+}

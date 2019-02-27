@@ -1,0 +1,74 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+
+using namespace std;
+int main() 
+{
+	int count = 0;
+	scanf("%d", &count);
+	getchar();
+	for (int i = 1; i <= count; i++)
+	{
+		long long int a,b,c;
+		scanf("%lld %lld %lld", &a, &b, &c);
+		getchar();
+		//unsigned long long int a1=(unsigned long long int)a;
+		//unsigned long long int b1 = (unsigned long long int)b;
+		//unsigned long long int c1 = (unsigned long long int)c;
+		long long res;
+		res = a + b;
+		if (a>0 && b>0)
+		{
+			if (res<=0)
+			{
+				cout << "Case #"<<i<<": true" << endl;
+			}
+			else
+			{
+				if (res>c)
+				{
+					cout << "Case #" << i << ": true" << endl;
+				}
+				else
+				{
+					cout << "Case #" << i << ": false" << endl;
+				}
+			}
+		}
+		else if (a<0&&b<0)
+		{
+			if (res>=0)
+			{
+				cout << "Case #" << i << ": false" << endl;
+			}
+			else
+			{
+				if (res > c)
+				{
+					cout << "Case #" << i << ": true" << endl;
+				}
+				else
+				{
+					cout << "Case #" << i << ": false" << endl;
+				}
+			}
+		}
+		else
+		{
+			if (res > c)
+			{
+				cout << "Case #" << i << ": true" << endl;
+			}
+			else
+			{
+				cout << "Case #" << i << ": false" << endl;
+			}
+		}
+	}
+	return 0;
+}

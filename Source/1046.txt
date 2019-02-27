@@ -1,0 +1,80 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+using namespace std;
+struct Pair
+{
+	int d1;
+	int d2;
+	int dis;
+};
+int main() 
+{
+	int total = 0;
+
+	int count = 0;
+	cin >> count;
+	int *arr = new int[count];
+	for (int i = 0; i < count; i++)
+	{
+		cin >> arr[i];
+		total += arr[i];
+	}
+	getchar();
+
+	int countp;
+	cin >> countp;
+	getchar();
+
+	Pair *av = new Pair[countp];
+	for (int i = 0; i < countp; i++)
+	{
+		Pair *p = new Pair();		
+		cin >> p->d1;
+		cin >> p->d2;
+		p->dis = -1;
+		p->d1--; p->d2--;
+		av[i] = *p;
+		getchar();
+	}
+
+	for (int i = 0; i < countp; i++)
+	{
+		int res1=0;
+		int res2=0;
+
+		if (av[i].d1>av[i].d2)
+		{
+			int temp;
+			temp = av[i].d1;
+			av[i].d1 = av[i].d2;
+			av[i].d2 = temp;
+		}
+		if (av[i].d2-av[i].d1<count/2)
+		{
+			int j1 = j1 = av[i].d1;
+			do {
+				res1 += arr[j1];
+				j1 = (j1 + 1) % count;
+			} while (j1 != av[i].d2);
+			res2 = total - res1;
+			av[i].dis = res1 > res2 ? res2 : res1;
+			cout << av[i].dis << endl;
+		}
+		else
+		{
+			int j2 = j2 = av[i].d1;
+			do {
+				j2 = (j2 - 1 + count) % count;
+				res2 += arr[j2];
+			} while (j2 != av[i].d2);
+			res1 = total - res2;
+			av[i].dis = res1 > res2 ? res2 : res1;
+			cout << av[i].dis << endl;
+		}
+	}
+	return 0;
+}

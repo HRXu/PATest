@@ -1,0 +1,93 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include<vector>
+#include <algorithm>
+using namespace std;
+struct node {
+	int ID;
+	int T;
+	int V;
+};
+vector<node> sages;
+vector<node> noble;
+vector<node> fool;
+vector<node> small;
+
+int Low, High;
+bool cmp(const node&a, const node&b) {
+	int a1 = a.T + a.V;
+	int b1 = b.T + b.V;
+	if (a1==b1)
+	{
+		if (a.V==b.V)
+		{
+			return a.ID < b.ID;
+		}
+		return a.V > b.V;
+	}
+	return a1 > b1;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length;
+	cin >> length >> Low >> High;
+	for (int i = 0; i < length; i++)
+	{
+		node n;
+		scanf("%d %d %d", &n.ID, &n.V, &n.T);
+		if (n.V<Low || n.T<Low)
+		{
+			continue;
+		}
+		if (n.V>=High &&n.T>=High)
+		{
+			sages.push_back(n);
+		}
+		else if(n.T<High && n.V>=High)
+		{
+			noble.push_back(n);
+		}
+		else if(n.V<High && n.T<High &&n.V>=n.T)
+		{
+			fool.push_back(n);
+		}
+		else
+		{
+			small.push_back(n);
+		}
+	}
+
+	sort(sages.begin(), sages.end(), cmp);
+	sort(noble.begin(), noble.end(), cmp);
+	sort(fool.begin(), fool.end(), cmp);
+	sort(small.begin(), small.end(), cmp);
+	
+	int length1 = sages.size();
+	int length4 = small.size();
+	int length3 = fool.size();
+	int length2 = noble.size();
+
+	printf("%d\n", length1 + length2 + length3 + length4);
+	for (int i = 0; i < length1; i++)
+	{
+		printf("%08d %d %d\n", sages[i].ID, sages[i].V, sages[i].T);
+	}
+
+	for (int i = 0; i < length2; i++)
+	{
+		printf("%08d %d %d\n", noble[i].ID, noble[i].V, noble[i].T);
+	}
+
+	for (int i = 0; i < length3; i++)
+	{
+		printf("%08d %d %d\n", fool[i].ID, fool[i].V, fool[i].T);
+	}
+
+	for (int i = 0; i < length4; i++)
+	{
+		printf("%08d %d %d\n", small[i].ID, small[i].V, small[i].T);
+	}
+
+	return 0;
+}

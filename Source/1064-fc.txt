@@ -1,0 +1,94 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+#include<queue>
+using namespace std;
+
+struct node{
+    int id;
+    node* left;
+    node* right;
+    node(int k){
+        id=k;
+        left=nullptr;
+        right=nullptr;
+    };
+};
+
+int node_count;
+int *input;
+
+void in_order(node *root,int& i){
+    if(root==nullptr) return;
+    in_order(root->left,i);
+    root->id=input[i];
+    i++;
+    in_order(root->right,i);
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>node_count;
+    input=new int[node_count];
+    for(int i=0;i<node_count;i++){
+        cin>>input[i];
+    }
+    sort(input,input+node_count);
+
+    queue<node*> q;
+    node* root=new node(-1);
+    q.push(root);
+    int _count=1;
+    while(1){
+        if(_count==node_count)break;
+        node *tmp=q.front();
+        if(tmp->left==nullptr){
+            tmp->left=new node(-1);
+            _count++;
+            q.push(tmp->left);
+        }
+        if(_count==node_count)break;
+        if(tmp->right==nullptr){
+            tmp->right=new node(-1);
+            _count++;
+            q.push(tmp->right);
+        }
+        q.pop();
+    }
+
+    int index=0;
+    in_order(root,index);
+
+    queue<node*> q2;
+    q2.push(root);
+    vector<int> v;
+    while(q2.size()!=0){
+        node *tmp=q2.front();
+        v.push_back(tmp->id);
+        if(tmp->left!=nullptr){
+            q2.push(tmp->left);
+        }
+        if(tmp->right!=nullptr){
+            q2.push(tmp->right);
+        }
+        q2.pop();
+    }
+
+    int len=v.size();
+    for(int i=0;i<len;i++){
+        if(i==(len-1)){
+            printf("%d",v[i]);
+        }
+        else{
+            printf("%d ",v[i]);
+        }
+    }
+	return 0;
+}

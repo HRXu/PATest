@@ -1,0 +1,74 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+using namespace std;
+
+vector<int> po1;
+vector<int> ne1;
+vector<int> po2;
+vector<int> ne2;
+bool cmp(int &a, int &b) {
+	return a > b;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length;
+	cin >> length;
+	for (int i = 0; i < length; i++)
+	{
+		int tmp; cin >> tmp;
+		if (tmp>0)
+		{
+			po1.push_back(tmp);
+		}
+		else
+		{
+			ne1.push_back(tmp);
+		}
+	}
+	cin >> length;
+	for (int i = 0; i < length; i++)
+	{
+		int tmp; cin >> tmp;
+		if (tmp > 0)
+		{
+			po2.push_back(tmp);
+		}
+		else
+		{
+			ne2.push_back(tmp);
+		}
+	}
+
+	sort(po1.begin(), po1.end(), cmp);
+	sort(po2.begin(), po2.end(), cmp);
+	sort(ne1.begin(), ne1.end());
+	sort(ne2.begin(), ne2.end());
+
+	int length1 = po1.size();
+	int length2 = po2.size();
+	int length3 = ne1.size();
+	int length4 = ne2.size();
+	
+	length1 = length1 > length2 ? length2 : length1;
+	length3 = length3 > length4 ? length4 : length3;
+
+	int res = 0;
+	for (int i = 0; i < length1; i++)
+	{
+		res += po1[i] * po2[i];
+	}
+	for (int i = 0; i < length3; i++)
+	{
+		res += ne1[i] * ne2[i];
+	}
+	cout << res;
+	return 0;
+}

@@ -1,0 +1,93 @@
+#include <iostream>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+#include<map>
+#include<set>
+using namespace std;
+
+struct node{
+    string s;
+    int num;
+    node(){
+        num=0;
+    }
+};
+map<string,int> m;
+vector<node> v;
+bool cmp(const node&a,const node&b){
+    if(a.num==b.num){
+        int la=a.s.length();
+        int lb=b.s.length();
+        int Min=la>lb?lb:la;
+        for(int i=0;i<Min;i++){
+            if(a.s[i]!=b.s[i]){
+                return a.s[i]<b.s[i];
+            }
+            return la<lb;
+        }
+    }
+    else{
+        return a.num>b.num;
+    }
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    int location=0;
+    char tmp=getchar();
+    string s;
+    bool flag=true;
+    while(flag){
+        switch(location){
+        case 0:
+            if(tmp>='a'&&tmp<='z'){
+                s+=tmp;
+                tmp=getchar();
+            }
+            else if(tmp>='A'&&tmp<='Z'){
+                s+=tmp-'A'+'a';
+                tmp=getchar();
+            }
+            else if(tmp>='0' && tmp<='9'){
+                s+=tmp;
+                tmp=getchar();
+            }
+            else{
+                m[s]++;
+                s.clear();
+                location=1;
+            }
+            break;
+        case 1:
+            if(tmp>='a'&&tmp<='z'){
+                location=0;
+            }
+            else if(tmp>='A'&&tmp<='Z'){
+                location=0;
+            }
+            else if(tmp>='0' && tmp<='9'){
+                location=0;
+            }
+            else if(tmp=='\n'){
+                flag=false;
+            }
+            else{
+                tmp=getchar();
+            }
+            break;
+        }
+    }
+
+    //map<node,int>::iterator it=m.begin();
+    for(map<string,int>::iterator it=m.begin();it!=m.end();it++){
+        node n;
+        n.s=it->first;
+        n.num=it->second;
+        v.push_back(n);
+    }
+    sort(v.begin(),v.end(),cmp);
+    printf("%s %d",v[0].s.c_str(),v[0].num);
+    return 0;
+}

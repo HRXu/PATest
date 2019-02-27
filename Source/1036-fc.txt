@@ -1,0 +1,95 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+#define St 8*3600
+using namespace std;
+struct male{
+	string ID;
+	string Name;
+	int score;
+};
+struct female {
+	string ID;
+	string Name;
+	int score;
+};
+bool cmp(const female&a, const female&b) {
+	return a.score > b.score;
+}
+bool cmp2(const male&a, const male&b) {
+	return a.score < b.score;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length;
+	cin >> length;
+
+	string ma_name, fe_name;
+	string ma_ID, fe_ID;
+	int score_high = -1;
+	int score_low = 101;
+
+	for (int i = 0; i < length; i++)
+	{
+		char gen;
+		string s;
+		string s2;
+		int score;
+		cin >> s >> gen >> s2 >> score;
+		if (gen=='M')
+		{
+			if (score<score_low)
+			{
+				ma_name = s;
+				ma_ID = s2;
+				score_low = score;
+			}
+		}
+		else
+		{
+			if (score > score_high)
+			{
+				fe_name = s;
+				fe_ID = s2;
+				score_high = score;
+			}
+		}
+	}
+
+	bool f = false;
+	if (score_high==-1)
+	{
+		printf("Absent\n");
+		f = true;
+	}
+	else
+	{
+		printf("%s %s\n", fe_name.c_str(), fe_ID.c_str());
+	}
+	if (score_low==101)
+	{
+		printf("Absent\n");
+		f = true;
+	}
+	else
+	{
+		printf("%s %s\n", ma_name.c_str(), ma_ID.c_str());
+	}
+
+	if (f)
+	{
+		printf("NA");
+	}
+	else
+	{
+		cout << score_high - score_low;
+	}
+	return 0;
+}

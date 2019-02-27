@@ -1,0 +1,116 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<set>
+using namespace std;
+
+struct node{
+    int level;
+    int left=-1;
+    int right=-1;
+}*tr;
+
+bool f1=false;
+bool check(vector<int>& _level){
+    int i=0;
+    bool status=false;
+    int length=_level.size();
+    for(int it=0;it<length;){
+        if(!status){
+            if(tr[_level[it]].left==-1){
+                status=true;
+                f1=true;
+                continue;
+            }
+            if(tr[_level[it]].right==-1){
+                continue;
+            }
+        }
+        else{
+            if(tr[_level[it]].left!=-1) return false;
+            if(tr[_level[it]].right!=-1) return false;
+        }
+        it++;
+    }
+    return true;
+}
+
+
+int main()
+{
+	freopen("data.txt","r",stdin);
+	int length;
+	cin>>length;
+	tr=new node[length];
+    int *mark=new int[length];
+    memset(mark,0,sizeof(int)*length);
+
+	for(int i=0;i<length;i++){
+        char a,b;
+        cin>>a>>b;
+        if(a!='-')
+        {
+            tr[i].left=(a-'0');
+            mark[a-'0']=1;
+        }
+        if(b!='-')
+        {
+            tr[i].right=(b-'0');
+            mark[b-'0']=1;
+        }
+	}
+
+	int root=0;
+	for(root;mark[root]==1;root++);
+
+
+	vector<int> d;
+	d.push_back(root);
+
+    bool flag=true;
+    while(1){
+        flag=check(d);
+        if(!flag)break;
+        if(f1)break;
+        vector<int>foo(d);
+        d.clear();
+        for(auto &it:foo){
+            if(tr[it].left!=-1)d.push_back(tr[it].left);
+            if(tr[it].right!=-1)d.push_back(tr[it].right);
+        }
+    }
+
+    if(!flag){
+        printf("NO %d",root);
+        return 0;
+    }
+
+
+    int id=-1;
+    for(auto &it:d){
+        if(tr[it].left!=-1)id=tr[it].left;
+        if(tr[it].right!=-1)id=tr[it].right;
+    }
+    if(id==-1){
+        id=d[d.size()-1];
+    }
+    printf("YES %d",id);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+

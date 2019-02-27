@@ -1,0 +1,82 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<cmath>
+#include<regex>
+#include<queue>
+#include<set>
+using namespace std;
+struct node{
+    int id;
+    node* lchild;
+    node* rchild;
+    node(int _id){
+        id=_id;
+        lchild=nullptr;
+        rchild=nullptr;
+    }
+}*root;
+int *post_order;
+int *in_order;
+int length;
+
+node *Create(int in_begin,int in_end){
+    set<int> s;
+    if(in_begin>in_end){
+        return nullptr;
+    }
+    for(int i=in_begin;i<=in_end;i++){
+        s.insert(in_order[i]);
+    }
+    int i1=length;
+    for(;i1>=0;i1--){
+        if(s.find(post_order[i1])!=s.end()) break;
+    }
+
+    int j1=0;
+    for(j1=in_begin;in_order[j1]!=post_order[i1];j1++);
+
+    node* res=new node(post_order[i1]);
+    res->lchild=Create(in_begin,j1-1);
+    res->rchild=Create(j1+1,in_end);
+    return res;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+
+	scanf("%d", &length);
+    post_order=new int[length];
+    in_order=new int[length];
+    for(int i=0;i<length;i++){
+        cin>>post_order[i];
+    }
+    for(int i=0;i<length;i++){
+        cin>>in_order[i];
+    }
+    root=Create(0,length-1);
+
+    vector<int> res;
+    queue<node*> q;
+    q.push(root);
+    while(q.size()!=0){
+        node *tmp=q.front();
+        res.push_back(tmp->id);
+        if(tmp->lchild!=nullptr) q.push(tmp->lchild);
+        if(tmp->rchild!=nullptr) q.push(tmp->rchild);
+        q.pop();
+    }
+
+    for(int i=0;i<length;i++){
+        if(i==(length-1)){
+            printf("%d",res[i]);
+        }
+        else{
+            printf("%d ",res[i]);
+        }
+    }
+	return 0;
+}

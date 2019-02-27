@@ -1,0 +1,54 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+using namespace std;
+class dict {
+public:
+	vector<char> dic;
+	void add(char d) {
+		if (d <= 'z'&&d >= 'a')
+		{
+			d=d-'a'+'A';
+		}
+		for (int i = 0; i < dic.size(); i++)
+		{
+			if (dic[i]==d)
+			{
+				return;
+			}
+		}
+		dic.push_back(d);
+		return;
+	}
+	void print() {
+		for (int i = 0; i < dic.size(); i++)
+		{
+			cout << dic[i];
+		}
+	}
+};
+int main()
+{
+	string s,d1;
+	cin >> s;
+	cin >> d1;
+	int count2 = d1.size();
+	dict dictionary;
+	for (int i = 0,j=0; i < s.size(); i++)
+	{
+		if (j==count2||s[i]!=d1[j])
+		{
+			dictionary.add(s[i]);
+		}
+		else
+		{
+			j++;
+		}
+	}
+	dictionary.print();
+	return 0;
+}

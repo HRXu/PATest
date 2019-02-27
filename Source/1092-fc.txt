@@ -1,0 +1,74 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+using namespace std;
+int main()
+{
+	int count[10 + 26 + 26] = {0};
+	string s;
+	string s2;
+	getline(cin, s);
+	getline(cin, s2);
+	int slength = s.size();
+	int s2length = s2.size();
+	for (int i = 0; i < s2length; i++)
+	{
+		if (s2[i]>='0'&& s2[i]<='9')
+		{
+			count[s2[i] - '0']--;
+		}
+		else if (s2[i] >= 'a' &&  s2[i] <= 'z')
+		{
+			count[s2[i] - 'a' + 10]--;
+		}
+		else if (s2[i]>='A'&&s2[i]<='Z')
+		{
+			count[s2[i] - 'A' + 36]--;
+		}
+	}
+	for (int i = 0; i < slength; i++)
+	{
+		if (s[i] >= '0'&& s[i] <= '9')
+		{
+			count[s[i] - '0']++;
+		}
+		else if (s[i] >= 'a' &&  s[i] <= 'z')
+		{
+			count[s[i] - 'a' + 10]++;
+		}
+		else if (s[i] >= 'A'&&s[i] <= 'Z')
+		{
+			count[s[i] - 'A' + 36]++;
+		}
+	}
+	bool IsEnough = true;
+	int positive = 0;
+	int negative = 0;
+	for (int i = 0; i < 10+26+26; i++)
+	{
+		if (count[i]<0)
+		{
+			IsEnough = false;
+			negative-=count[i];
+		}
+		if (count[i]>0)
+		{
+			positive+=count[i];
+		}
+	}
+	if (IsEnough)
+	{
+		cout << "Yes ";
+		cout << positive;
+	}
+	else
+	{
+		cout << "No ";
+		cout << negative;
+	}
+	return 0;
+}

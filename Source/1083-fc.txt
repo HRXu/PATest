@@ -1,0 +1,47 @@
+#include <iostream>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+#include<map>
+#include<set>
+#include<cmath>
+#include<stack>
+using namespace std;
+
+struct node{
+    string name;
+    string id;
+    int grade;
+};
+vector<node> v1;
+vector<node> v2;
+bool cmp(const node& a,const node&b){
+    return a.grade>b.grade;
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+    int length=0;
+    scanf("%d",&length);
+    for(int i=0;i<length;i++){
+        node s;
+        cin>>s.name>>s.id>>s.grade;
+        v1.push_back(s);
+    }
+    int a,b;
+    scanf("%d %d",&a,&b);
+    for(auto &it:v1){
+        if(it.grade>=a&&it.grade<=b){
+            v2.push_back(it);
+        }
+    }
+    if(v2.size()==0){
+        printf("NONE");
+        return 0;
+    }
+    sort(v2.begin(),v2.end(),cmp);
+    for(auto &it:v2){
+        printf("%s %s\n",it.name.c_str(),it.id.c_str(),it.grade);
+    }
+    return 0;
+}

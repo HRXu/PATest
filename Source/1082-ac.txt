@@ -1,0 +1,112 @@
+#include <iostream>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+#include<map>
+#include<set>
+#include<cmath>
+#include<sstream>
+#include<stack>
+using namespace std;
+
+stack<string> st2;
+
+string dict[10]={"ling","yi","er","san","si","wu","liu","qi","ba","jiu"};
+string unit[4]={"","Shi","Bai","Qian"};
+string s;
+
+vector<string> wan;
+vector<string> qian;
+vector<string> yi;
+bool isPositive=true;
+void Add(vector <string>&v,string s){
+
+    int length=s.size();
+    bool flag=false;
+    for(int i=0;i<length;i++){
+        if(s[i]=='0' && !flag){ continue;}
+        else{flag=true;}
+        if(s[i]=='-'){
+            v.push_back("-");
+            break;
+        }
+        else if(s[i]=='0'){
+            v.push_back("ling");
+            flag=false;
+            continue;
+        }
+        v.push_back(unit[i]);
+        v.push_back(dict[s[i]-'0']);
+    }
+    return;
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+    string s;
+    cin>>s;
+    int sign=atoi(s.c_str());
+
+    if(sign==0){
+        printf("ling");
+        return 0;
+    }
+
+
+    stringstream ss;
+    ss<<abs(sign);
+    string tmp=ss.str();
+
+    reverse(tmp.begin(),tmp.end());
+    int length=tmp.size();
+
+    vector<string> res;
+    if(sign<0){
+        res.push_back("Fu");
+    }
+
+    if(length>=9){
+        Add(qian,tmp.substr(0,4));
+        Add(wan,tmp.substr(4,4));
+        Add(yi,tmp.substr(8,1));
+    }
+    else if(length>=5){
+        Add(qian,tmp.substr(0,4));
+        Add(wan,tmp.substr(4,4));
+    }else{
+        Add(qian,tmp);
+    }
+
+
+    if(yi.size()!=0){
+        for(int i=yi.size()-1;i>=0;i--){
+            if(yi[i]=="") continue;
+            res.push_back(yi[i]);
+        }
+        res.push_back("Yi");
+    }
+    if(wan.size()!=0){
+        for(int i=wan.size()-1;i>=0;i--){
+            if(wan[i]=="") continue;
+            res.push_back(wan[i]);
+        }
+        res.push_back("Wan");
+    }
+    if(qian.size()!=0){
+        for(int i=qian.size()-1;i>=0;i--){
+            if(qian[i]=="") continue;
+            res.push_back(qian[i]);
+        }
+    }
+
+    int len=res.size();
+    for(int i=0;i<len;i++){
+        if(i==(len-1)){
+            printf("%s",res[i].c_str());
+        }
+        else{
+            printf("%s ",res[i].c_str());
+        }
+    }
+    return 0;
+}

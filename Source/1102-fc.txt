@@ -1,0 +1,93 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<set>
+using namespace std;
+
+struct node{
+    int left=-1;
+    int right=-1;
+}*tr;
+int *od;
+
+vector<int> res_level;
+vector<int> res_in_order;
+
+void in_order(int root){
+    if(root==-1)return;
+    in_order(tr[root].right);
+    res_in_order.push_back(root);
+    in_order(tr[root].left);
+}
+
+void level(node *tree,int length,int root){
+    queue<int> q;
+    q.push(root);
+    while(q.size()!=0){
+        int i=q.front();
+        res_level.push_back(i);
+        q.pop();
+        if(tree[i].right!=-1) q.push(tree[i].right);
+        if(tree[i].left!=-1) q.push(tree[i].left);
+    }
+}
+
+void display(vector<int> d){
+    int length=d.size();
+    for(int i=0;i<length;i++){
+        if(i==(length-1)){
+            printf("%d",d[i]);
+        }
+        else{
+            printf("%d ",d[i]);
+        }
+    }
+}
+
+int main()
+{
+	freopen("data.txt","r",stdin);
+	int length;
+    cin>>length;
+    tr=new node[length];
+    od=new int[length];
+    memset(od,0,sizeof(int)*length);
+
+    for(int i=0;i<length;i++){
+        char a,b;
+        cin>>a>>b;
+        if(a!='-'){tr[i].left=(a-'0');od[a-'0']++;}
+        if(b!='-'){tr[i].right=(b-'0');od[b-'0']++;}
+    }
+
+    int root;
+    for(int i=0;i<length;i++){
+        if(od[i]==0){
+            root=i;
+            break;
+        }
+    }
+
+    in_order(root);
+    level(tr,length,root);
+    display(res_level);
+    printf("\n");
+    display(res_in_order);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+

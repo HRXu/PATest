@@ -1,0 +1,73 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<stack>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#define ll long long
+using namespace std;
+struct node {
+	char name[9] = {0};
+	int age;
+	int asset;
+};
+bool cmp(const node&a, const node&b) {
+	if (a.asset==b.asset)
+	{
+		if (a.age!=b.age)
+		{
+			return a.age < b.age;
+		}
+		for (int i = 0; i < 8; i++)
+		{
+			if (a.name[i]!=b.name[i])
+			{
+				return a.name[i] < b.name[i];
+			}
+		}
+	}
+	return a.asset > b.asset;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int _case, query;
+	scanf("%d %d", &_case, &query);
+	vector<node> v;
+	for (int i = 0; i < _case; i++)
+	{
+		node s;
+		scanf("%s %d %d", &s.name, &s.age, &s.asset);
+		v.push_back(s);
+	}
+	sort(v.begin(), v.end(), cmp);
+	for (int i = 0; i < query; i++)
+	{
+		int count, ra, rb;
+		scanf("%d %d %d", &count, &ra, &rb);
+		int counter = count;
+		printf("Case #%d:\n", i+1);
+		for (int j = 0; j < _case; j++)
+		{
+			if (counter==0)
+			{
+				break;
+			}
+			if (v[j].age<=rb && v[j].age>=ra)
+			{
+				printf("%s %d %d\n", v[j].name, v[j].age, v[j].asset);
+				counter--;
+			}
+		}
+		if (counter==count)
+		{
+			printf("None\n");
+		}
+	}
+	return 0;
+}

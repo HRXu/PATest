@@ -1,0 +1,109 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<stack>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#include<queue>
+#include<set>
+#define ll long long
+using namespace std;
+struct node {
+	int Content;
+		node* left;
+		node *right;
+		int height=0;
+} *root;
+int Height(node *d) {
+	return d == nullptr ? 0 : d->height;
+}
+
+void R(node* &n) {
+	node *tmp = n->left;
+	n->left = n->left->right;
+	tmp->right = n;
+	n = tmp;
+	n->right->height = max(Height(n->right->left), Height(n->right->right)) + 1;
+	n->height = max(Height(n->left), Height(n->right)) + 1;
+}
+void L(node* &n) {
+	node *tmp = n->right;
+	n->right = n->right->left;
+	tmp->left = n;
+	n = tmp;
+	n->left->height = max(Height(n->left->left), Height(n->left->right)) + 1;
+	n->height = max(Height(n->left), Height(n->right)) + 1;
+}
+void RL(node* &n) {
+	R(n->right);
+	L(n);
+}
+void LR(node* &n) {
+	L(n->left);
+	R(n);
+}
+
+void Insert(int d,node* &n) {
+	if (n==nullptr)
+	{
+		n = new node();
+		n->Content = d;
+		n->height = 1;
+		return;
+	}
+	else
+	{
+		if (d>n->Content)
+		{
+			Insert(d, n->right);
+			n->height = max(Height(n->left), Height(n->right)) + 1;
+			if (Height(n->left) - Height(n->right) == -2)
+			{
+				if (n->right->Content>d)
+				{
+					RL(n);
+				}
+				else
+				{
+					L(n);
+				}
+			}
+		}
+		else if(d<n->Content)
+		{
+			Insert(d, n->left);
+			n->height = max(Height(n->left), Height(n->right)) + 1;
+			if (Height(n->left) - Height(n->right) == 2)
+			{
+				if (d>n->left->Content)
+				{
+					LR(n);
+				}
+				else
+				{
+					R(n);
+				}
+			}
+		}
+	}
+}
+
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length;
+	cin >> length;
+	for (int i = 0; i < length; i++)
+	{
+		int c;
+		cin >> c;
+		Insert(c, root);
+	}
+	cout << root->Content;
+	return 0;
+}

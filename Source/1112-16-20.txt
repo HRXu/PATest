@@ -1,0 +1,106 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+using namespace std;
+struct node {
+	char d;
+	vector<int> time;
+};
+vector<node> v;
+vector<node> cv;
+void add(char d, int time) {
+	int count = v.size();
+	for (int i = 0; i < count; i++)
+	{
+		if (v[i].d==d)
+		{
+			v[i].time.push_back(time);
+			return;
+		}
+	}
+	node *s = new node();
+	s->d = d;
+	s->time.push_back(time);
+	v.push_back(*s);
+	return;
+}
+void check(int repeat) {
+	int count = v.size();
+	for (int i = 0; i < count; i++)
+	{
+		bool flag = true;
+		for (int j = 0; j < v[i].time.size(); j++)
+		{
+			if (v[i].time[j] == 1||v[i].time[j]%repeat!=0)
+			{
+				flag = false; break;
+			}
+		}
+		if (flag)
+		{
+			cv.push_back(v[i]);
+		}
+	}
+}
+bool contains(char d) {
+	int count = cv.size();
+	for (int i = 0; i < count; i++)
+	{
+		if (cv[i].d==d)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+int main()
+{
+	int repeat;
+	scanf("%d", &repeat);
+	getchar();
+	char input[1000];
+	scanf("%s", &input);
+	for (int i = 0,j; input[i]!='\0';)
+	{
+		char d = input[i];
+		int count=0;
+		for (j = i; input[j] != '\0'; j++)
+		{
+			if (input[j] == d)
+			{
+				count++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		i = j;
+		add(d, count);
+	}
+	check(repeat);
+	for (int i = 0; i < cv.size(); i++)
+	{
+		cout << cv[i].d;
+	}
+	cout << endl;
+	for (int i = 0; i < input[i]!='\0';)
+	{
+		if (contains(input[i]))
+		{
+			cout << input[i];
+			i += repeat;
+		}
+		else
+		{
+			cout << input[i];
+			i += 1;
+		}
+	}
+	return 0;
+}

@@ -1,0 +1,68 @@
+#include <iostream>
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+#include<map>
+#include<cstdlib>
+#include<cmath>
+#include<cstring>
+#include<set>
+using namespace std;
+bool isPrime(int k){
+    if(k==2) return true;
+    if(k==1) return false;
+    int l=(int)sqrt((float)k);
+    for(int i=2;i<=l;i++){
+        if(k%i==0)return false;
+    }
+    return true;
+}
+
+char* position;
+
+int main()
+{
+    //freopen("data.txt","r",stdin);
+    int in,length;
+    cin>>in>>length;
+    for(;!isPrime(in);in++);
+    position=new char[length];
+    memset(position,0,sizeof(char)*length);
+    int *table=new int[in];
+    memset(table,0,sizeof(int)*in);
+
+    for(int i=0;i<length;i++){
+        int input;
+        cin>>input;
+
+        int tmp;
+        bool flag=false;
+        for(int j=0;j<in;j++){
+            tmp=(input+j*j)%in;
+            if(table[tmp]==0) {
+                position[i]=tmp+'0';
+                table[tmp]=1;
+                flag=true;
+                break;
+            }
+        }
+        if(i==length-1){
+            if(flag){
+                printf("%d",tmp);
+            }
+            else{
+                printf("-");
+            }
+        }
+        else{
+            if(flag){
+                printf("%d ",tmp);
+            }
+            else{
+                printf("- ");
+            }
+        }
+    }
+
+    return 0;
+}

@@ -1,0 +1,73 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<set>
+using namespace std;
+
+struct node{
+    vector<int> child;
+    double price=100000000000;
+};
+vector<node> v;
+
+double root_price,increment;
+double _min=100000000000;
+int _count=0;
+
+void dfs(int root,int level){
+    if(v[root].child.size()==0){
+        double tmp=root_price*pow(increment,level);
+        if(tmp<_min){
+            _min=tmp;
+        }
+        v[root].price=tmp;
+    }
+    for(auto &it:v[root].child){
+        dfs(it,level+1);
+    }
+}
+
+
+int main()
+{
+	freopen("data.txt","r",stdin);
+	int length;
+    cin>>length>>root_price>>increment;
+    increment=increment/100+1;
+
+    v.resize(length);
+    for(int i=0;i<length;i++){
+        int cnt;
+        cin>>cnt;
+        for(int j=0;j<cnt;j++){
+            int tmp;
+            cin>>tmp;
+            v[i].child.push_back(tmp);
+        }
+    }
+
+    dfs(0,0);
+    for(auto&it:v){
+        if(it.price==_min) _count++;
+    }
+
+    printf("%0.4f %d",_min,_count);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+

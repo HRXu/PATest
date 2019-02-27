@@ -1,0 +1,109 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+using namespace std;
+int main() 
+{
+	char input[10000];
+	scanf("%s", &input);
+	if (input[0]=='-')
+	{
+		cout << '-';
+	}
+	int index;
+	for (index = 3; input[index]!='E'; index++)
+	{
+		
+	}
+	int index2;
+	for (index2 = index+2; input[index2]!='\0'; index2++)
+	{
+
+	}
+
+	int base = 0;
+	bool ef = false;
+	if (input[index+1]=='-')
+	{
+		ef = false;
+	}
+	else
+	{
+		ef = true;
+	}
+	for (int i = index2-1,count=0; i >index+1; i--,count++)
+	{
+		base += (input[i] - '0') * pow(10, count);
+	}
+
+
+	if (base==0)
+	{
+		for (int i = 1; input[i] !='E' ; i++)
+		{
+			cout << input[i];
+		}
+	}
+	else if (ef)
+	{
+		char buf[10000] = {0};
+		buf[0] = input[1];
+		for (int i = 3,j=1; input[i] != 'E'; i++, j++) 
+		{
+			buf[j] = input[i];
+		};
+		if (buf[base]==0)
+		{
+			for (int i = 0; i <=
+ base; i++)
+			{
+				if (buf[i]==0)
+				{
+					cout << '0';
+				}
+				else
+				{
+					cout << buf[i];
+				}
+			}
+		}
+		else
+		{
+			int i;
+			for (i=0; i <= base; i++)
+			{
+				cout << buf[i];
+			}
+			if (buf[i]==0)
+			{
+				return 0;
+			}
+			else
+			{
+				cout << '.';
+				for (int k = i; buf[k]!=0; k++)
+				{
+					cout << buf[k];
+				}
+			}
+		}
+	}
+	else
+	{
+		cout << "0.";
+		for (int i = base-1; i >0; i--)
+		{
+			cout << '0';
+		}
+		cout << input[1];
+		for (int i = 3; input[i]!='E'; i++)
+		{
+			cout << input[i];
+		}
+	}
+	return 0;
+}

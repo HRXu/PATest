@@ -1,0 +1,115 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+#define St 8*3600
+using namespace std;
+typedef struct {
+	int arr;
+	int req;
+	int start;
+}customer;
+vector<customer> v;
+vector<customer> win;
+int avgTime = 0;
+
+bool cmp(const customer &a, const customer &b) {
+	return a.arr < b.arr;
+}
+int check() {
+	int i = 0,j=0;
+	int length = win.size();
+	int min = 1000000;
+	for (; i < length; i++)
+	{
+		if (win[i].start+win[i].req<min)
+		{
+			min = win[i].start + win[i].req;
+			j = i;
+		}
+	}
+	win.erase(win.begin() + j);
+	return min;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length, window;
+	cin >> length >> window;
+	for (int i = 0; i < length; i++)
+	{
+		customer c;
+		int h, m, s;
+		scanf("%d:%d:%d %d", &h, &m, &s,&c.req);
+		c.req *= 60;
+		c.arr = h * 3600 + m * 60 + s;
+		v.push_back(c);
+	}
+	sort(v.begin(), v.end(), cmp);
+	for (int i = 0; i < length; i++)
+	{
+		if (v[i].arr<St)
+		{
+			if (win.size()<window)
+			{
+				v[i].start = St;
+				win.push_back(customer(v[i]));
+			}
+			else if(win.size()==window)
+			{
+				int time = check();
+				if (time<v[i].arr)
+				{
+					v[i].start = v[i].arr;
+				}
+				else
+				{
+					v[i].start = time;
+				}
+				win.push_back(customer(v[i]));
+			}
+			//v[i].wait += (St - v[i].arr);
+		}
+		else
+		{
+			if (win.size() < window)
+			{
+				v[i].start = v[i].arr;
+				win.push_back(customer(v[i]));
+			}
+			else if (win.size() == window)
+			{
+				int time = check();
+				if (time < v[i].arr)
+				{
+					v[i].start = v[i].arr;
+				}
+				else
+				{
+					v[i].start = time;
+				}
+				win.push_back(customer(v[i]));
+			}
+		}
+	}
+	int j = 0;
+	for (int i = 0; i < length; i++)
+	{
+		if (v[i].arr>=17*3600+1)
+		{
+			continue;
+		}
+		else {
+			j++; avgTime += (v[i].start - v[i].arr);
+		}
+	}
+	float res= avgTime / j;
+	res /= 60;
+	printf("%.1f", res);
+	return 0;
+}

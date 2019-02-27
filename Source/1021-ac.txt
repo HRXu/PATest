@@ -1,0 +1,129 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+#define St 8*3600
+using namespace std;
+struct node {
+	int series;
+	vector<int> adj;
+	int deep;
+}*adjTable;
+int *remark;
+int rlength;
+
+int deepth=-1;
+void update(int i) {
+	if (i>=deepth)
+	{
+		deepth = i;
+	}
+}
+bool Clear() {
+	for (int i = 0; i < rlength; i++)
+	{
+		if (remark[i]!=1)
+		{
+			return false;
+		}
+	}
+	for (int i = 0; i < rlength; i++)
+	{
+		remark[i] = 0;
+	}
+	return true;
+}
+
+void D(int i1,int &deep) {
+	int bar=adjTable[i1].adj.size();
+	remark[i1] = 1;
+	for (int i = 0; i < bar; i++)
+	{
+		if (remark[adjTable[i1].adj[i]]!=1)
+		{
+			deep++;
+			update(deep);
+			D(adjTable[i1].adj[i], deep);
+			deep--;
+		}
+	}
+}
+
+bool cmp(const node &a, const node &b) {
+	if (a.deep==b.deep)
+	{
+		return a.series > b.series;
+	}
+	else
+	{
+		return a.deep < b.deep;
+	}
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length;
+	scanf("%d", &length);
+	getchar();
+	rlength = length;
+	adjTable = new node[length];
+	remark = new int[length];
+	for (int i = 0; i < length-1; i++)
+	{
+		int a, b;
+		scanf("%d %d", &a, &b);
+		getchar();
+		adjTable[a-1].adj.push_back(b-1);
+		adjTable[b-1].adj.push_back(a-1);
+	}
+
+
+	bool flag = true;
+	for (int i = 0; i < length; i++)
+	{
+		int d = 0;
+		D(i, d);
+		adjTable[i].deep = deepth;
+		adjTable[i].series = i;
+		deepth = -1;
+		if(!Clear())
+		{
+			flag = false;
+			break;
+		}
+	}
+
+	if (!flag)
+	{
+		int components = 1;
+		int foo = 0;
+			for (int i = 0; i < length; i++)
+			{
+				if (remark[i]!=1)
+				{
+					components++;
+					D(i, foo);
+				}
+			}
+		printf("Error: %d components", components);
+		return 0;
+	}
+	else
+	{
+		sort(adjTable, adjTable + length,cmp);
+		int tmp = adjTable[length - 1].deep;
+		for (int i = length-1; i > -1; i--)
+		{
+			if (adjTable[i].deep==tmp)
+			{
+				printf("%d\n", adjTable[i].series+1);
+			}
+		}
+	}
+	return 0;
+}

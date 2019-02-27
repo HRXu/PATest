@@ -1,0 +1,56 @@
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <set>
+#include<vector>
+#include<map>
+#include<cstdlib>
+#include<cstdio>
+using namespace std;
+
+int resv(int i,int radix){
+    vector<int> d;
+    int tmp=i;
+    int foo;
+    do{
+        d.push_back(tmp%radix);
+        tmp/=radix;
+    }while(tmp!=0);
+    foo=d.size();
+    int res=0;
+    for(int i=foo-1,j=0;i>=0;i--,j++){
+        res+=(d[i]*pow(radix,j));
+    }
+    return res;
+}
+bool isPrime(int i1){
+    if(i1==1||i1==0) return false;
+    if(i1==2) return true;
+    int d=(int)sqrt((double)i1);
+    for(int i=2;i<=d;i++){
+        if(i1%i==0) return false;
+    }
+    return true;
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+    while(1){
+        int a,r;
+        cin>>a;
+        if(a<0) break;
+        cin>>r;
+        if(isPrime(a)){
+            if(isPrime(resv(a,r))){
+                printf("Yes\n");
+            }
+            else{
+                printf("No\n");
+            }
+        }
+        else{
+            printf("No\n");
+        }
+    }
+	return 0;
+}

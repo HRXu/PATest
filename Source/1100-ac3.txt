@@ -1,0 +1,95 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<cmath>
+#include<cstring>
+#include<map>
+using namespace std;
+string s[13] = { "tret","tam", "hel", "maa", "huh", "tou", "kes", "hei", "elo", "syy", "lok", "mer", "jou" };
+string s2[13] = { "tret","jan", "feb", "mar", "apr", "may", "jun", "jly", "aug", "sep", "oct", "nov", "dec" };
+
+map<string,int> map_mars2;
+map<string,int> map_mars1;
+
+void ToMars(string input) {
+	int c =atoi(input.c_str());
+	int size = input.size();
+	int dec = 0; int foo = 0;
+
+	dec = c / 13;
+	foo = c % 13;
+	if (c==0)
+	{
+		cout << "tret" << endl;
+		return;
+	}
+	if (foo==0)
+	{
+		cout << s[dec] << endl;
+		return;
+	}
+	if (dec==0)
+	{
+		cout << s2[foo] << endl;
+		return;
+	}
+	cout << s[dec] <<' '<<s2[foo]<< endl;
+}
+void ToEarth(string input)
+{
+    if(input.size()==3||input.size()==4){
+        cout << map_mars2[input] << endl;
+    }
+    else{
+        vector<string> v;
+        string tmp;
+        int len=input.length();
+        for(int i=0;i<len;i++){
+            if(input[i]<='z' && input[i]>='a'){
+                tmp+=input[i];
+            }
+            else{
+                v.push_back(tmp);
+                tmp.clear();
+            }
+        }
+        v.push_back(tmp);
+        int length=v.size();
+        int res=0;
+        for(int i=length-2,j=1;i>=0;i--){
+            res+=pow(13,j)*map_mars1[v[i]];
+        }
+        res+=map_mars2[v[length-1]];
+        cout << res << endl;
+    }
+}
+int main()
+{
+    for(int i=0;i<13;i++){
+        map_mars1[s[i]]=i;
+        map_mars2[s2[i]]=i;
+    }
+    for(int i=1;i<13;i++){
+        map_mars2[s[i]]=i+12;
+    }
+    freopen("data.txt","r",stdin);
+	int count;
+	scanf("%d", &count);
+	getchar();
+	for (int i = 0; i < count; i++)
+	{
+		string s;
+		getline(cin, s);
+		if (s[0]>='0' &&s[0]<='9')
+		{
+			ToMars(s);
+		}
+		else {
+			ToEarth(s);
+		}
+	}
+	return 0;
+}

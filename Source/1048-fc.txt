@@ -1,0 +1,74 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#define ll long long
+using namespace std;
+
+int search(vector<int> &v, int b, int c, int des) {
+	if (b<=c)
+	{
+		int middle = (b + c) / 2;
+		if (v[middle]==des)
+		{
+			return des;
+		}
+		else if(v[middle]>des)
+		{
+			return search(v, b, middle - 1, des);
+		}
+		else
+		{
+			return search(v, middle + 1, c, des);
+		}
+	}
+	return -1;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length,price;
+	cin >> length >> price;
+	vector<int> coins;
+	for (int i = 0; i < length; i++)
+	{
+		int d;
+		scanf("%d", &d);
+		if (d>=price)
+		{
+			continue;
+		}
+		coins.push_back(d);
+	}
+	length = coins.size()-1;
+	sort(coins.begin(), coins.end());
+	for (int i = 0; i < length; i++)
+	{
+		/*for (int j = length; j != i; j--)
+		{
+			if (coins[i]+coins[j]==price)
+			{
+				printf("%d %d", coins[i], coins[j]);
+				return 0;
+			}
+		}*/
+		int res = search(coins, i+1, length, price - coins[i]);
+		if (res==-1)
+		{
+			continue;
+		}
+		else
+		{
+			printf("%d %d", coins[i], res);
+			return 0;
+		}
+	}
+	printf("No Solution");
+	return 0;
+}

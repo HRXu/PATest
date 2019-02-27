@@ -1,0 +1,66 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#define ll long long
+using namespace std;
+struct range {
+	int l;
+	int r;
+	range(int a, int b,int c) {
+		l = a;
+		r = b;
+		d = c;
+	}
+	int d;
+};
+vector<range> res;
+bool cmp(const range &a, const range &b) {
+	if (a.d==b.d)
+	{
+		return a.l < b.l;
+	}
+	return a.d < b.d;
+}
+
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length, price;
+	cin >> length >> price;
+	int* sum = new int[length+1];
+	sum[0]=0;
+	int s = 0;
+	for (int i = 0; i < length; i++)
+	{
+		int foo;
+		scanf("%d", &foo);
+		s += foo;
+		sum[i+1] = s;
+	}
+
+	for (int i = 1; i <= length; i++)
+	{
+	    int p=lower_bound(sum+i,sum+length+1,price+sum[i-1])-sum;
+	    if(p==length+1)break;
+        res.push_back(*(new range(i, p, sum[p]-sum[i-1]-price)));
+	}
+	sort(res.begin(), res.end(), cmp);
+	int d = res[0].d;
+	length = res.size();
+	for (int i = 0; i <length; i++)
+	{
+		if (res[i].d!=d)
+		{
+			break;
+		}
+		printf("%d-%d\n", res[i].l, res[i].r);
+	}
+	return 0;
+}

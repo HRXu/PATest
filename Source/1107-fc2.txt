@@ -1,0 +1,95 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<set>
+using namespace std;
+
+struct node{
+    int prev;
+    int number;
+};
+node hobbies[1001];
+
+int find_pre(int i){
+    if(hobbies[i].prev==i) return i;
+    hobbies[i].prev=find_pre(hobbies[hobbies[i].prev].prev);
+    return hobbies[i].prev;
+}
+void uni(int a,int b){
+    int a1=find_pre(a);
+    int b1=find_pre(b);
+    if(a1!=b1){
+        hobbies[a1].prev=b1;
+        if(hobbies[a1].number!=0){
+            hobbies[b1].number+=hobbies[a1].number;
+            hobbies[a1].number=0;
+        }
+    }
+}
+
+
+
+int main()
+{
+	freopen("data.txt","r",stdin);
+	int length;
+	for(int i=0;i<1001;i++){
+        hobbies[i].prev=i;
+        hobbies[i].number=0;
+	}
+	cin>>length;
+
+	for(int i=0;i<length;i++){
+        int cnt;
+        scanf("%d:",&cnt);
+        vector<int> foo;
+        foo.resize(cnt);
+        for(int j=0;j<cnt;j++){
+            cin>>foo[j];
+        }
+
+        for(int i=1;i<cnt;i++){
+            uni(foo[0],foo[i]);
+        }
+        int first=find_pre(foo[0]);
+        hobbies[first].number++;
+	}
+
+	vector<int> res;
+	int _count=0;
+	for(int i=0;i<1001;i++){
+        if(hobbies[i].number!=0){
+            _count++;
+            res.push_back(hobbies[i].number);
+        }
+	}
+	sort(res.begin(),res.end(),[](int a,int b)->bool {return a>b;});
+	printf("%d\n",_count);
+	length=res.size();
+	for(int i=0;i<length;i++){
+        if(i==(length-1)){
+            printf("%d",res[i]);
+        }
+        else{
+            printf("%d ",res[i]);
+        }
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+

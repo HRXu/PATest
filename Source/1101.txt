@@ -1,0 +1,60 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <queue>
+#include<vector>
+#include<algorithm>
+
+using namespace std;
+int main()
+{ 
+	int num = 0;
+	scanf("%d", &num);
+	int *a=new int[num];
+	for (int i = 0; i < num; i++)
+	{
+		scanf("%d",&(a[i]));
+	}
+	vector<int> v;
+	int count = 0;
+	for (int i = 0; i < num; i++)
+	{
+		bool flag = true;
+		for (int j = 0; j < i; j++)
+		{
+			if (a[j]>a[i])
+			{
+				//remark[i] = 0;
+				flag=false;
+				break;
+			}
+		}
+		for (int j = i+1; j < num; j++)
+		{
+			if (a[j]<a[i])
+			{
+				//remark[i] = 0;
+				flag = false;
+				break;
+			}
+		}
+		if (flag)
+		{
+			v.push_back(a[i]);
+		}
+	}
+	sort(v.begin(), v.end());
+	printf("%d\n", v.size());
+	for (int i = 0; i < v.size();)
+	{
+		cout << v[i];
+		i++;
+		if (i!=v.size())
+		{
+			cout << " ";
+		}
+	}
+	printf("\n");
+	return 0;
+}

@@ -1,0 +1,73 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<stack>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#define ll long long
+using namespace std;
+bool check(int num,int capacity) {
+	int input = 1,i=0;
+	stack<int> s;
+
+	int* foo = new int[num];
+	for (int j= 0; j < num; j++)
+	{
+		scanf("%d", &foo[j]);
+	}
+
+	for (;;)
+	{
+		if (s.size()>capacity)
+		{
+			return false;
+		}	
+		else if (s.size()!=0 && s.top() == foo[i])
+		{
+			s.pop();
+			i++;
+			if (i == num)
+			{
+				break;
+			}
+		}
+		else
+		{
+			if (input==num+1)
+			{
+				break;
+			}
+			s.push(input);
+			input++;
+		}
+	}
+
+	if (i==num && input==num+1)
+	{
+		return true;
+	}
+	return false;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length, num,seqNum;
+	cin >> length >> num>>seqNum;
+	for (int i = 0; i < seqNum; i++)
+	{
+		if (check(num,length))
+		{
+			printf("YES\n");
+		}
+		else
+		{
+			printf("NO\n");
+		}
+	}
+	return 0;
+}

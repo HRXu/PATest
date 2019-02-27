@@ -1,0 +1,88 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<stack>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#include<queue>
+#define ll long long
+using namespace std;
+struct node {
+	ll key;
+	ll count=0;
+	node(ll a) {
+		key = a;
+		count = 1;
+	}
+};
+vector<node> res;
+void add(ll i2) {
+	int length = res.size();
+	for (ll i = 0; i < length; i++)
+	{
+		if (res[i].key==i2)
+		{
+			res[i].count++;
+			return;
+		}
+	}
+	res.push_back(node(i2));
+}
+bool cmp(const node&a, const node&b) {
+	return a.key < b.key;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	ll length;
+	scanf("%lld", &length);
+	ll number = length;
+	ll count = (long)sqrt(length);
+	for (ll i = 2; i <=count; i++)
+	{
+		if (length % i==0)
+		{
+			add(i);
+			length /= i;
+			i = 1;
+		}
+	}
+	sort(res.begin(), res.end(),cmp);
+	int ds = res.size()-1;
+	if (ds==-1)
+	{
+		printf("%lld=%lld", number,number);
+		return 0;
+	}
+	printf("%lld=", number);
+	for (int i = 0; i <= ds; i++){
+		if (i!=ds)
+		{
+			if (res[i].count != 1)
+			{
+				printf("%lld^%lld*", res[i].key, res[i].count);
+			}
+			else
+			{
+				printf("%lld*", res[i].key);
+			}
+		}
+		else
+		{
+			if (res[i].count != 1)
+			{
+				printf("%lld^%lld", res[i].key, res[i].count);
+			}
+			else
+			{
+				printf("%lld", res[i].key);
+			}
+		}
+	}
+	return 0;
+}

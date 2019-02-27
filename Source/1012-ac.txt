@@ -1,0 +1,150 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#define ll long long
+using namespace std;
+struct student
+{
+	int ID;
+	int CS;
+	int CR;
+	int MS;
+	int MR;
+	int ES;
+	int ER;
+	int AS;
+	int AR;
+};
+
+student *a;
+bool cmpA(student &A,student &B) {
+		return A.AS > B.AS;
+}
+bool cmpC(student &A, student &B) {
+		return A.CS > B.CS;
+}
+bool cmpM(student &A, student &B) {
+		return A.MS > B.MS;
+}
+bool cmpE(student &A, student &B) {
+		return A.ES >B.ES;
+}
+
+void setA(int length) {
+	for (int i = 0,_rank=-1,as=-1; i < length; i++)
+	{
+        if(a[i].AS==as){
+            a[i].AR=_rank;
+        }
+        else{
+            _rank=i+1;
+            as=a[i].AS;
+            a[i].AR=_rank;
+        }
+	}
+}
+void setC(int length) {
+	for (int i = 0,_rank=-1,as=-1; i < length; i++)
+	{
+        if(a[i].CS==as){
+            a[i].CR=_rank;
+        }
+        else{
+            _rank=i+1;
+            as=a[i].CS;
+            a[i].CR=_rank;
+        }
+	}
+}
+void setM(int length) {
+	for (int i = 0,_rank=-1,as=-1; i < length; i++)
+	{
+        if(a[i].MS==as){
+            a[i].MR=_rank;
+        }
+        else{
+            _rank=i+1;
+            as=a[i].MS;
+            a[i].MR=_rank;
+        }
+	}
+}
+void setE(int length) {
+	for (int i = 0,_rank=-1,as=-1; i < length; i++)
+	{
+        if(a[i].ES==as){
+            a[i].ER=_rank;
+        }
+        else{
+            _rank=i+1;
+            as=a[i].ES;
+            a[i].ER=_rank;
+        }
+	}
+}
+
+
+
+void Search(int ID,int length) {
+	for (int i = 0; i < length; i++)
+	{
+		if (a[i].ID==ID)
+		{
+			if (a[i].AR<=a[i].CR &&a[i].AR <= a[i].MR&&a[i].AR <= a[i].ER)
+			{
+				cout << a[i].AR << " A" << endl;
+				return;
+			}
+			if (a[i].CR < a[i].AR &&a[i].CR <= a[i].MR&&a[i].CR <= a[i].ER)
+			{
+				cout << a[i].CR << " C" << endl;
+				return;
+			}
+			if (a[i].MR < a[i].CR &&a[i].MR < a[i].AR&&a[i].MR <= a[i].ER)
+			{
+				cout << a[i].MR << " M" << endl;
+				return;
+			}
+			if (a[i].ER <a[i].AR &&a[i].ER < a[i].MR&&a[i].ER < a[i].CR)
+			{
+				cout << a[i].ER << " E" << endl;
+				return;
+			}
+		}
+	}
+	cout << "N/A" << endl;
+}
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int _count, queryC;
+	cin >> _count>>queryC;
+	a = new student[_count];
+
+	for (int i = 0; i < _count; i++)
+	{
+		cin >>a[i].ID>> a[i].CS >> a[i].MS >> a[i].ES;
+		a[i].AS = (a[i].CS + a[i].MS + a[i].ES) / 3;
+	}
+	sort(a, a + _count, cmpA);
+	setA(_count);
+	sort(a, a + _count, cmpC);
+	setC(_count);
+	sort(a, a + _count, cmpM);
+	setM(_count);
+	sort(a, a + _count, cmpE);
+	setE(_count);
+
+	for (int i = 0; i < queryC; i++)
+	{
+		int id;
+		cin >> id;
+		Search(id, _count);
+	}
+	return 0;
+}
