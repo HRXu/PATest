@@ -1,0 +1,58 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+using namespace std;
+struct node{
+    int id;
+    node* left=nullptr;
+    node* right=nullptr;
+}*tree;
+int node_count;
+
+int *pre_order;
+int *in_order;
+
+
+int res;bool flag=true;
+node* creat(int in_begin,int in_end,int pre_begin){
+    //if(!flag)return nullptr;
+    if(in_begin>in_end)return nullptr;
+
+    int _pos;
+    for(_pos=in_begin;_pos<=in_end && in_order[_pos]!=pre_order[pre_begin];_pos++);
+    node *r=new node();
+    r->id=pre_order[pre_begin];
+    r->left=creat(in_begin,_pos-1,pre_begin+1);
+    r->right=creat(_pos+1,in_end,_pos-in_begin+pre_begin+1);
+
+    printf("%d ",r->id);
+    exit(0);
+    //if(r->left==nullptr &&r->right==nullptr &&flag ){res=r->id;flag=false;}
+    return r;
+}
+
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>node_count;
+
+    pre_order=new int[node_count];
+    in_order=new int[node_count];
+
+    for(int i=0;i<node_count;i++){
+        scanf("%d",&pre_order[i]);
+    }
+    for(int i=0;i<node_count;i++){
+        scanf("%d",&in_order[i]);
+    }
+    tree=creat(0,node_count-1,0);
+
+	return 0;
+}

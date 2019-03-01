@@ -1,0 +1,93 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<stack>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#include<queue>
+#include<set>
+#define ll long long
+using namespace std;
+stack<int> st;
+int tree[100001];
+int _count[100001];
+void add(int location,int value){
+    for(int i=location;i<100001;i+=(i&-i)){
+        tree[i]+=value;
+    }
+}
+int get_sum(int location){
+    int sum=0;
+    for(int i=location;i>0;i-=(i&-i)){
+        sum+=tree[i];
+    }
+    return sum;
+}
+
+void push(int value){
+    st.push(value);
+    _count[value+1]++;
+    add(value+1,1);
+}
+void pop(){
+    if(st.size()==0) {
+        printf("Invalid\n");
+        return;
+    }
+    int i=st.top();
+    printf("%d\n",i);
+    _count[i+1]--;
+    add(i+1,-1);
+    st.pop();
+    return;
+}
+void peek(){
+    if(st.size()==0) {
+        printf("Invalid\n");
+        return;
+    }
+    int c=st.size();
+    int tmp=c%2==0?c/2:(c+1)/2;
+    int _begin=1,_end=100000;
+    while(_begin<=_end){
+        int s=(_begin+_end)/2;
+        int sum=get_sum(s);
+        if(sum>=tmp){
+            _end=s-1;
+        }
+        else{
+            _begin=s+1;
+        }
+    }
+    printf("%d\n",_begin-1);
+}
+
+
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length;
+	cin>>length;
+	_count[0]=0;
+	for(int i=0;i<length;i++){
+        string s;
+        cin>>s;
+        if(s[1]=='u'){
+            string s2;
+            cin>>s2;
+            push(atoi(s2.c_str()));
+        }
+        if(s[1]=='o'){
+            pop();
+        }
+        if(s[2]=='e'){
+            peek();
+        }
+	}
+	return 0;
+}

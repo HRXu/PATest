@@ -1,0 +1,108 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<stack>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#include<queue>
+#include<set>
+#define ll long long
+using namespace std;
+
+struct city{
+    int pre;
+    int cost;
+    int distance;
+}*city_list;
+
+
+int **adj;
+int **cost;
+bool *vis;
+int city_count,edge_count,_st,_end;
+
+void Dijkstra(int s){
+    vis=new bool[city_count];
+    memset(vis,0,sizeof(bool)*city_count);
+    vis[s]=true;
+    for(int i=0;i<city_count;i++){
+        city_list[i].distance=adj[s][i];
+        city_list[i].cost=cost[s][i];
+        city_list[i].pre=s;
+    }
+    for(int i=0;i<city_count;i++){
+        int _min=0x3f3f3f3f,n;
+        for(int j=0;j<city_count;j++){
+            if(!vis[j]&&_min>city_list[j].distance){
+                n=j;_min=city_list[j].distance;
+            }
+        }
+        vis[n]=true;
+        for(int j=0;j<city_count;j++){
+            if(!vis[j]){
+                if(city_list[j].distance>city_list[n].distance+adj[n][j]){
+                    city_list[j].distance=city_list[n].distance+adj[n][j];
+                    city_list[j].cost=city_list[n].cost+cost[n][j];
+                    city_list[j].pre=n;
+                }
+                else if(city_list[j].distance==city_list[n].distance+adj[n][j]){
+                    if(city_list[j].cost>city_list[n].cost+cost[n][j]){
+                        city_list[j].distance=city_list[n].distance+adj[n][j];
+                        city_list[j].cost=city_list[n].cost+cost[n][j];
+                        city_list[j].pre=n;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+int main()
+{
+	//freopen("data.txt", "r", stdin);
+    cin>>city_count>>edge_count>>_st>>_end;
+
+    city_list=new city[city_count];
+    for(int i=0;i<city_count;i++)city_list[i].pre=i;
+
+    adj=new int*[city_count];
+    cost=new int*[city_count];
+
+    for(int i=0;i<city_count;i++){
+        adj[i]=new int[city_count];
+        memset(adj[i],0x3f,sizeof(int)*city_count);
+        cost[i]=new int[city_count];
+        memset(cost[i],0x3f,sizeof(int)*city_count);
+    }
+    for(int i=0;i<edge_count;i++){
+        int a,b,c,d;
+        cin>>a>>b>>c>>d;
+        adj[a][b]=adj[b][a]=c;
+        cost[a][b]=cost[b][a]=d;
+    }
+
+    Dijkstra(_st);
+    vector<int> v;
+    int i=_end;
+    while(city_list[i].pre!=i){
+        v.push_back(i);
+        i=city_list[i].pre;
+    }
+    v.push_back(_st);
+
+    int len=v.size();
+    for(int i=len-1;i>=0;i--){
+        printf("%d ",v[i]);
+    }
+    printf("%d ",city_list[_end].distance);
+    printf("%d",city_list[_end].cost);
+
+
+	return 0;
+}

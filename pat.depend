@@ -1,15 +1,12 @@
 # depslib dependency file v1.0
-1551411254 source:c:\users\wella\documents\pat\pat\main.cpp
-	<iostream>
+1551448587 source:c:\users\wella\documents\pat\pat\main.cpp
 	<cstdio>
-	<string>
+	<iostream>
 	<vector>
-	<stack>
 	<algorithm>
-	<math.h>
-	<map>
-	<unordered_map>
-	<regex>
+	<cstdlib>
+	<cstring>
 	<queue>
+	<cmath>
 	<set>
 
