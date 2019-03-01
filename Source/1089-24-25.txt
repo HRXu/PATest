@@ -1,0 +1,91 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+#include<map>
+#include<queue>
+using namespace std;
+int* originA;
+int* originB;
+int* destination;
+
+bool isEqual(int *arr,int *des,int length){
+    for(int i=0;i<length;i++){
+        if(arr[i]!=des[i]) return false;
+    }
+    return true;
+}
+void _insert(int *arr,int& index,int length){
+    sort(arr,arr+index);
+    index++;
+}
+
+void _merge(int* arr,int &step,int length){
+    for(int k=0;;k+=step){
+        if(k+step>=length){
+            sort(arr+k,arr+length);
+            break;
+        }
+        else{
+            sort(arr+k,arr+k+step);
+        }
+    }
+    step*=2;
+}
+
+
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    int length;
+    cin>>length;
+    originA=new int[length];
+    originB=new int[length];
+    destination=new int[length];
+    for(int i=0;i<length;i++){
+        cin>>originA[i];
+        originB[i]=originA[i];
+    }
+    for(int i=0;i<length;i++){
+        cin>>destination[i];
+    }
+
+    bool flagA=false;int indexA=0;
+    while(indexA<length){
+        _insert(originA,indexA,length);
+        if(flagA=isEqual(originA,destination,length)) break;
+    }
+    if(flagA){
+        printf("Insertion Sort\n");
+        _insert(originA,indexA,length);
+        for(int i=0;i<length;i++){
+            if(i==(length-1))printf("%d",originA[i]);
+            else printf("%d ",originA[i]);
+        }
+        return 0;
+    }
+
+    bool flagB=false;int step=2;
+    while(1){
+        _merge(originB,step,length);
+        if(flagB=isEqual(originB,destination,length)) break;
+    }
+    if(flagB){
+        printf("Merge Sort\n");
+        _merge(originB,step,length);
+        for(int i=0;i<length;i++){
+            if(i==(length-1))printf("%d",originB[i]);
+            else printf("%d ",originB[i]);
+        }
+        return 0;
+    }
+
+
+    return 0;
+}

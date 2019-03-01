@@ -1,0 +1,111 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<stack>
+#include<algorithm>
+#include<math.h>
+#include<map>
+#include<unordered_map>
+#include<regex>
+#include<queue>
+#include<set>
+#define ll long long
+using namespace std;
+struct node {
+	  int Content;
+		node* left;
+		node *right;
+		int height;
+		node(int i){
+		  left=nullptr;
+		  right=nullptr;
+		  height=1;
+		  Content=i;
+		}
+} *tree;
+int Height(node *d) {
+	return d == nullptr ? 0 : d->height;
+}
+
+node* R(node* n) {
+	node *lchild = n->left;
+	n->left=lchild->right;
+	lchild->right=n;
+
+	lchild->height = max(Height(lchild->left), Height(lchild->right)) + 1;
+	n->height = max(Height(n->left), Height(n->right)) + 1;
+	return lchild;
+}
+node* L(node* n) {
+	node *rchild = n->right;
+	n->right=rchild->left;
+	rchild->left=n;
+
+	rchild->height = max(Height(rchild->left), Height(rchild->right)) + 1;
+	n->height = max(Height(n->left), Height(n->right)) + 1;
+	return rchild;
+}
+node* RL(node* n) {
+	n->right=R(n->right);
+	return L(n);
+}
+node* LR(node* n) {
+	n->left=L(n->left);
+	return R(n);
+}
+
+node* Insert(int d,node*root) {
+	if (root==nullptr) return new node(d);
+	else
+	{
+		if (d>root->Content)
+		{
+			root->right=Insert(d, root->right);
+			if (Height(root->left) - Height(root->right) == -2)
+			{
+				if (root->right->Content>d)
+				{
+					root=RL(root);
+				}
+				else
+				{
+					root=L(root);
+				}
+			}
+		}
+		else if(d<root->Content)
+		{
+			root->left=Insert(d, root->left);
+			if (Height(root->left) - Height(root->right) == 2)
+			{
+				if (d>root->left->Content)
+				{
+					root=LR(root);
+				}
+				else
+				{
+					root=R(root);
+				}
+			}
+		}
+	}
+	root->height = max(Height(root->left), Height(root->right)) + 1;
+	return root;
+}
+
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	int length;
+	cin >> length;
+	for (int i = 0; i < length; i++)
+	{
+		int c;
+		cin >> c;
+		tree=Insert(c, tree);
+	}
+	cout << tree->Content;
+	return 0;
+}
