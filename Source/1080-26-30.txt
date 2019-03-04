@@ -1,0 +1,120 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define READ_IN(i) int i;cin>>i
+using namespace std;
+
+int applicant_count,school_count,choice_count;
+struct school{
+    int quota;
+    vector<int> applicants;
+}*li;
+
+struct applicant{
+    int id;
+    int Ge;
+    int Gi;
+    int Total;
+    vector<int> willings;
+    int _rank;
+}*rank_list;
+bool cmp(const applicant&a,const applicant&b){
+    if(a.Total==b.Total){
+        return a.Ge>b.Ge;
+    }
+    return a.Total>b.Total;
+}
+void Check(){
+    sort(rank_list,rank_list+applicant_count,cmp);
+    for(int i=0,j=1,tmp1=rank_list[0].Total,tmp2=rank_list[0].Ge
+        ;i<applicant_count;i++){
+        if(rank_list[i].Total==tmp1){
+            if(rank_list[i].Ge==tmp2){
+                rank_list[i]._rank=j;
+            }
+            else {
+                j=i+1;
+                rank_list[i]._rank=j;
+                tmp2=rank_list[i].Ge;
+            }
+        }
+        else{
+            j=i+1;
+            rank_list[i]._rank=j;
+            tmp1=rank_list[i].Total;
+            tmp2=rank_list[i].Ge;
+        }
+    }
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>applicant_count>>school_count>>choice_count;
+    li=new school[school_count];
+    FOR(i,0,school_count){
+        cin>>li[i].quota;
+    }
+    rank_list=new applicant[applicant_count];
+    FOR(i,0,applicant_count){
+        cin>>rank_list[i].Ge>>rank_list[i].Gi;
+        rank_list[i].Total=rank_list[i].Ge+rank_list[i].Gi;
+        rank_list[i].id=i;
+        FOR(j,0,choice_count){
+            READ_IN(tmp);
+            rank_list[i].willings.push_back(tmp);
+        }
+    }
+    Check();
+
+
+    FOR(i,0,applicant_count){
+        for(auto &it:rank_list[i].willings){
+            //vector<int> &v=li[it].applicants;
+            int len=li[it].applicants.size();
+            if(len<li[it].quota){
+                li[it].applicants.push_back(rank_list[i].id);
+                break;
+            }
+            if(len>=li[it].quota){
+                int foo=li[it].applicants[len-1];
+                if(rank_list[foo]._rank==rank_list[i]._rank){
+                    li[it].applicants.push_back(rank_list[i].id);
+                    break;
+                }
+            }
+        }
+    }
+
+    FOR(i,0,school_count){
+        int len=li[i].applicants.size();
+
+        if(len==0){
+            printf("\n");
+            continue;
+        }
+        sort(li[i].applicants.begin(),li[i].applicants.end());
+        for(int j=0;j<len;j++){
+            if(j==(len-1)){
+                printf("%d",li[i].applicants[j]);
+            }
+            else{
+                printf("%d ",li[i].applicants[j]);
+            }
+        }
+        printf("\n");
+    }
+	return 0;
+}
+
+

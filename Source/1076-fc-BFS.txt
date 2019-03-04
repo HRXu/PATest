@@ -1,0 +1,77 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+using namespace std;
+struct num{
+    vector<int> followers;
+    int id;
+}*li;
+int _max_level;
+int _count;
+
+bool *vis;
+int *level;
+int query(int number){
+    memset(vis,0,sizeof(bool)*_count);
+    memset(level,0,sizeof(int)*_count);
+    queue<int> q;
+    q.push(number);
+    vis[number]=true;
+
+    int res=0;
+    while(q.size()!=0){
+        int tmp=q.front();
+        if(level[tmp]<_max_level){
+            for(auto &it:li[tmp].followers){
+                if(!vis[it]){
+                    level[it]=level[tmp]+1;
+                    res++;
+                    vis[it]=true;
+                    q.push(it);
+                }
+            }
+        }
+        q.pop();
+    }
+    return res;
+}
+
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>_count>>_max_level;
+    li=new num[_count];
+    vis=new bool[_count];
+    level=new int[_count];
+
+    FOR(i,0,_count){
+        int j;
+        cin>>j;
+        FOR(k,0,j){
+            int tmp;
+            cin>>tmp;
+            li[tmp-1].followers.push_back(i);
+        }
+    }
+
+    int _query_count;
+    cin>>_query_count;
+    FOR(i,0,_query_count){
+        int tmp;
+        cin>>tmp;
+        printf("%d\n",query(tmp-1));
+    }
+	return 0;
+}
+
+
