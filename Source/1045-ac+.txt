@@ -1,0 +1,68 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<set>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+using namespace std;
+vector<int> stripe;
+
+
+int book[2001];
+
+int* dparr;
+
+int stripe_length;
+int _max=0;
+void dp(){
+    for(int j=1;j<stripe_length;j++){
+        int order=book[stripe[j]];
+        int i;
+        for(i=j-1;i>0;i--){
+            int tmp=book[stripe[i]];
+            if(tmp<=order){
+                break;
+            }
+        }
+        dparr[j]=dparr[i]+1;
+        _max=max(_max,dparr[j]);
+    }
+}
+
+int main()
+{
+	freopen("data.txt","r",stdin);
+	int _count;
+	cin>>_count;
+	cin>>_count;
+    FOR(i,1,_count+1){
+        int tmp;
+        cin>>tmp;
+        book[tmp]=i;
+    }
+
+    int len;
+    cin>>len;
+    stripe.push_back(0);
+    for(int i=0;i<len;i++){
+        int tmp;
+        cin>>tmp;
+        if(book[tmp]!=0){
+            stripe.push_back(tmp);
+        }
+    }
+    stripe_length=stripe.size();
+    dparr=new int[stripe_length];
+    memset(dparr,0,sizeof(int)*stripe_length);
+
+    dp();
+    printf("%d",_max);
+	return 0;
+}
+
+

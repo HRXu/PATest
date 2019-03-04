@@ -1,0 +1,66 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<set>
+using namespace std;
+
+struct st{
+    string origin;
+    char sort_arr[10];
+}*li;
+
+int _count;
+
+bool cmp(const st&a,const st&b){
+    for(int i=0;i<10;i++){
+        if(a.sort_arr[i]!=b.sort_arr[i]){
+            return a.sort_arr[i]<b.sort_arr[i];
+        }
+    }
+    return true;
+}
+
+int main()
+{
+	freopen("data.txt","r",stdin);
+	cin>>_count;
+    li=new st[_count];
+    for(int i=0;i<_count;i++){
+        cin>>li[i].origin;
+    }
+
+    for(int i=0;i<_count;i++){
+        int len=li[i].origin.length();
+        for(int j=0;j<10;j++){
+            li[i].sort_arr[j]=li[i].origin[j%len];
+        }
+    }
+
+    sort(li,li+_count,cmp);
+
+    bool flag=true;
+    for(int i=0;i<_count;i++){
+        int m=atoi(li[i].origin.c_str());
+        if(m==0){
+            if(flag&&i!=_count-1)continue;
+            printf("%d",m);
+        }
+        else {
+            if(flag){
+                flag=false;
+                printf("%d",m);
+            }
+            else{
+                printf("%s",li[i].origin.c_str());
+            }
+        }
+    }
+	return 0;
+}
+
+

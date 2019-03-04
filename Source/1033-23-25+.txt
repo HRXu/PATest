@@ -1,0 +1,96 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<set>
+using namespace std;
+
+struct station{
+    double pprice;
+    double _dis;
+}*li;
+bool cmp(const station &a,const station &b){return a._dis<b._dis;}
+int capacity,dis,consume,station_count;
+int position_now;
+double fuel=0;
+double cost=0;
+int main()
+{
+	freopen("data.txt","r",stdin);
+	cin>>capacity>>dis>>consume>>station_count;
+
+	li=new station[station_count];
+    for(int i=0;i<station_count;i++){
+        cin>>li[i].pprice>>li[i]._dis;
+    }
+    sort(li,li+station_count,cmp);
+
+    double expect;
+    while(1){
+        expect=capacity*consume+li[position_now]._dis;
+        int n=-1;double _min=1000000;
+        for(int i=position_now+1; i<station_count && expect>=li[i]._dis;i++){
+            if(_min>li[i].pprice){
+                n=i;
+                _min=li[i].pprice;
+            }
+        }
+        //no stations;
+        if(n==-1){
+            if(expect>=dis){
+                double tmp_feul=(dis-li[position_now]._dis)/consume;
+                if(tmp_feul>fuel){
+                    cost+=(tmp_feul-fuel)*li[position_now].pprice;
+                }
+                break;
+            }
+            else{
+                printf("The maximum travel distance = %0.2f",expect);
+                return 0;
+            }
+        }
+        else{
+            if(li[position_now].pprice<=_min){
+                if(expect>=dis){
+                    double tmp_feul=(dis-li[position_now]._dis)/consume;
+                    if(tmp_feul>fuel){
+                        cost+=(tmp_feul-fuel)*li[position_now].pprice;
+                    }
+                    break;
+                }
+                double tmp_feul=(li[n]._dis-li[position_now]._dis)/consume;
+                if(tmp_feul<=fuel){
+                    fuel-=tmp_feul;
+                }
+                else{
+                    cost+=(capacity-fuel)*li[position_now].pprice;
+                    fuel=capacity-tmp_feul;
+                }
+                position_now=n;
+            }
+            else{
+                int k;
+                for(k=position_now+1;li[k].pprice>=li[position_now].pprice;k++);
+                double tmp_feul=(li[k]._dis-li[position_now]._dis)/consume;
+
+                if(tmp_feul<=fuel){
+                    fuel-=tmp_feul;
+                }
+                else{
+                    cost+=(tmp_feul-fuel)*li[position_now].pprice;
+                    fuel=0;
+                }
+                position_now=k;
+            }
+        }
+    }
+
+    printf("%.2f",cost);
+	return 0;
+}
+
+

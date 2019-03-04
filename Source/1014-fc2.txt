@@ -1,0 +1,139 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<set>
+using namespace std;
+struct customer{
+    int id;
+    int minute;
+    int begin_time;
+    int end_time;
+}*li;
+
+int minute_now=8*60;
+vector<queue<customer*>> v;
+queue<customer*> wait_zone;
+int windows,capacity,customer_count,query;
+
+void Init(){
+    int flag=1;
+    for(int i=0;i<customer_count;i++){
+        if(flag==1){
+            if(v[0].size()<=capacity){
+                v[0].push(li+i);
+            }
+            flag=2;
+        }
+        else if(flag==2){
+            if(v[1].size()<=capacity){
+                v[1].push(li+i);
+                flag=1;
+            }
+            else{
+                flag=3;
+            }
+        }
+        else{
+            wait_zone.push(li+i);
+        }
+    }
+}
+
+
+int find_min(){
+    int _min=0x3f3f3f3f;
+    int res=-1;
+    for(int i=windows-1;i>=0;i--){
+        int tmp=v[i].size();
+        if(tmp<=_min && tmp<capacity){
+            res=i;
+            _min=tmp;
+        }
+    }
+    return res;
+}
+
+int find_min_time(){
+    int _min=0x3f3f3f3f;
+    for(int i=windows-1;i>=0;i--){
+        if(v[i].size()==0) continue;
+        customer* d=v[i].front();
+
+        if(d->end_time<=_min){
+            _min=d->end_time;
+        }
+    }
+    return _min;
+}
+
+int main()
+{
+	//freopen("data.txt","r",stdin);
+	cin>>windows>>capacity>>customer_count>>query;
+
+    v.resize(windows);
+    li=new customer[customer_count];
+
+    for(int i=0;i<customer_count;i++){
+        li[i].id=i;
+        cin>>li[i].minute;
+        wait_zone.push(li+i);
+    }
+
+    //Init();
+
+    int rest_count=customer_count;
+    while(rest_count!=0){
+        int t=find_min_time();
+
+        for(int i=0;i<windows;i++){
+            if(v[i].size()==0)continue;
+            customer* d=v[i].front();
+
+            if(d->end_time==t){
+                v[i].pop();
+                rest_count--;
+                minute_now=t;
+
+                if(v[i].size()!=0){
+                    d=v[i].front();
+                    d->begin_time=minute_now;
+                    d->end_time=minute_now+d->minute;
+                }
+            }
+        }
+
+        int _min=find_min();
+        while(_min!=-1 &&wait_zone.size()!=0){
+            customer *d=wait_zone.front();
+
+            if(v[_min].size()==0){
+                d->begin_time=minute_now;
+                d->end_time=minute_now+d->minute;
+            }
+            v[_min].push(d);
+            wait_zone.pop();
+            _min=find_min();
+        }
+    }
+
+    for(int i=0;i<query;i++){
+        int a;
+        cin>>a;
+        if(li[a-1].begin_time<17*60){
+            printf("%02d:%02d\n",li[a-1].end_time/60,li[a-1].end_time%60);
+        }
+        else{
+            printf("Sorry\n");
+        }
+    }
+
+	return 0;
+}
+
+
