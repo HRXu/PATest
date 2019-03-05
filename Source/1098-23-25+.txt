@@ -1,0 +1,103 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_IN(i) int i;cin>>i
+using namespace std;
+int recond_count,query_count;
+int *arr1,*arr2;
+int *origin;
+void AdjHeap(int* arr,int root,const int length){
+    int left=root*2+1;
+    int right=root*2+2;
+    int largest=root;
+    if(left<length&&arr[left]>arr[largest])largest=left;
+    if(right<length&&arr[right]>arr[largest])largest=right;
+    if(largest!=root){
+        swap(arr[largest],arr[root]);
+        AdjHeap(arr,largest,length);
+    }
+}
+void BuildHeap(int *arr,const int length){
+    for(int i=length-1;i>=0;i--){
+        AdjHeap(arr,i,length);
+    }
+}
+bool check(const int* a,const int* b,const int length){
+    FOR(i,0,length){
+        if(a[i]!=b[i]) return false;
+    }
+    return true;
+}
+
+void display(const int *a,const int length){
+    FOR(i,0,length){
+        if(i==(length-1)){
+            printf("%d",a[i]);
+        }
+        else{
+            printf("%d ",a[i]);
+        }
+    }
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+    int length;
+    cin>>length;
+    arr1=new int[length];
+    arr2=new int[length];
+    origin=new int[length];
+    FOR(i,0,length){
+        cin>>arr1[i];
+        arr2[i]=arr1[i];
+    }
+    FOR(i,0,length){
+        cin>>origin[i];
+    }
+
+    BuildHeap(arr1,length);
+    FOR(i,0,length){
+        AdjHeap(arr1,0,length-i);
+
+        if(check(arr1,origin,length)){
+            printf("Heap Sort\n");
+            if(i!=(length-1)){
+                swap(arr1[0],arr1[length-i-1]);
+                i++;
+                AdjHeap(arr1,0,length-i);
+            }
+            display(arr1,length);
+            return 0;
+        }
+        swap(arr1[0],arr1[length-i-1]);
+    }
+
+    FOR(i,0,length){
+        sort(arr2,arr2+i);
+        if(check(arr2,origin,length)){
+            printf("Insertion Sort\n");
+            if(i!=(length-1)){
+                i++;
+                sort(arr2,arr2+i);
+            }
+            display(arr2,length);
+        }
+    }
+	return 0;
+}
+
+

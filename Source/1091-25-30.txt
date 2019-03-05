@@ -1,0 +1,84 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_IN(i) int i;cin>>i
+using namespace std;
+int x,y,z,threshold;
+
+int*** adj;
+bool*** vis;
+
+void dfs(int _x,int _y,int _z,int &_count){
+    if(_x<0||_x>=x)return;
+    if(_y<0||_y>=y)return;
+    if(_z<0||_z>=z)return;
+    if(vis[_x][_y][_z])return;
+    if(adj[_x][_y][_z]==0)return;
+
+    _count++;
+    vis[_x][_y][_z]=true;
+
+    dfs(_x+1,_y,_z,_count);
+    dfs(_x-1,_y,_z,_count);
+    dfs(_x,_y+1,_z,_count);
+    dfs(_x,_y-1,_z,_count);
+    dfs(_x,_y,_z+1,_count);
+    dfs(_x,_y,_z-1,_count);
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>x>>y>>z>>threshold;
+    adj=new int**[x];
+    vis=new bool**[y];
+    FOR(i,0,x){
+        adj[i]=new int*[y];
+        vis[i]=new bool*[y];
+        FOR(j,0,y){
+            adj[i][j]=new int[z];
+            vis[i][j]=new bool[z];
+            MEMSET_0(adj[i][j],int,z);
+            MEMSET_0(vis[i][j],bool,z);
+        }
+    }
+
+    FOR(i,0,z){
+        FOR(j,0,x){
+            FOR(k,0,y){
+                cin>>adj[j][k][i];
+            }
+        }
+    }
+
+    int total=0;
+    FOR(i,0,x){
+        FOR(j,0,y){
+            FOR(k,0,z){
+                int _count=0;
+                dfs(i,j,k,_count);
+                if(_count>=threshold) total+=_count;
+            }
+        }
+    }
+    cout<<total;
+
+
+	return 0;
+}
+
+

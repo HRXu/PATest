@@ -1,0 +1,131 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_IN(i) int i;cin>>i
+using namespace std;
+int recond_count,query_count;
+struct recond{
+    string plate_number;
+    string status;
+    int _time;
+}*reconds;
+bool cmp(const recond& a,const recond&b){
+    return a._time<b._time;
+}
+bool cmp2(const recond&a,const recond &b){
+    if(a.plate_number==b.plate_number){
+        return a._time<b._time;
+    }
+    return a.plate_number<b.plate_number;
+}
+
+unordered_map<string,int> during;
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>recond_count>>query_count;
+    reconds=new recond[recond_count];
+    FOR(i,0,recond_count){
+        recond &r=reconds[i];
+        int a,b,c;
+        cin>>r.plate_number;
+        scanf("%d:%d:%d",&a,&b,&c);
+        cin>>r.status;
+        r._time=a*60*60+b*60+c;
+    }
+    sort(reconds,reconds+recond_count,cmp2);
+///////////////////
+    int _max_during=-1;
+    vector<recond> v2;
+    string pl_name_now=reconds[0].plate_number;
+    bool flag=false;
+    for(int i=0,j=0;i<recond_count;){
+        recond &r=reconds[i];
+
+        if(r.plate_number==pl_name_now){
+            if(r.status=="in"){
+                j=i;
+                flag=true;
+            }
+            else if(flag&&r.status=="out"){
+                v2.push_back(reconds[j]);
+                v2.push_back(reconds[i]);
+
+                during[pl_name_now]+=reconds[i]._time-reconds[j]._time;
+                _max_during=max(during[pl_name_now],_max_during);
+
+                flag=false;
+            }
+            i++;
+        }else{
+            pl_name_now=r.plate_number;
+            flag=false;
+        }
+    }
+    sort(v2.begin(),v2.end(),cmp);
+///////////////////////
+    queue<int> q;
+    FOR(i,0,query_count){
+        int a,b,c;
+        scanf("%d:%d:%d",&a,&b,&c);
+        q.push(a*60*60+b*60+c);
+    }
+
+    int time_now=v2[0]._time;
+    vector<int> res;
+
+    int len=v2.size();
+    for(int i=0,_count=0;i<len;i++){
+        recond &r=v2[i];
+        time_now=r._time;
+        if(q.size()!=0&&time_now>q.front()){
+            res.push_back(_count);
+            q.pop();
+        }
+        if(r.status=="in"){
+
+            _count++;
+            continue;
+        }else{
+            _count--;
+        }
+    }
+
+    vector<string> res2;
+    for(auto &it:during){
+        if(it.second==_max_during){
+            res2.push_back(it.first);
+        };
+    }
+    sort(res2.begin(),res2.end());
+    for(auto &it:res){
+        printf("%d\n",it);
+    }
+    for(auto &it:res2){
+        printf("%s ",it.c_str());
+    }
+    int a,b;
+    a=_max_during/3600;
+    _max_during%=3600;
+    b=_max_during/60;
+    _max_during%=60;
+    printf("%02d:%02d:%02d",a,b,_max_during);
+	return 0;
+}
+
+
