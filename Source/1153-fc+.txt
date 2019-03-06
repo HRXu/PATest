@@ -1,0 +1,141 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#define FOR(a,j,k) for(int a=(j);a<(k);a++)
+#define READ_INT(i) int i;cin>>i
+#define MEMSET(a,b,c,d) memset(a,b,sizeof(c)*d)
+#define MEMSET_0(a,c,d) MEMSET(a,0,c,d)
+#define MEMSET_MAX(a,c,d) MEMSET(a,0x3f,c,d)
+#define MEMSET_MIN(a,c,d) MEMSET(a,-0x3f,c,d)
+#include<vector>
+#include<cstdio>
+#include<set>
+#include<algorithm>
+#include<string>
+#include<unordered_map>
+using namespace std;
+struct student {
+	string origin;
+	char level;
+	int score;
+	int date;
+	int site;
+	student(string s,int _score) {
+		origin = s;
+		level = s[0];
+		date = atoi(s.substr(4, 6).c_str());
+		site = atoi(s.substr(1, 3).c_str());
+		score = _score;
+	}
+};
+vector<student> v;
+
+int stu_count, query_count;
+
+bool cmp(const student& a ,const student &b) {
+	if (a.score == b.score) {
+		return a.origin < b.origin;
+	}
+	return a.score > b.score;
+}
+void query_class(char _clss) {
+	vector<student> tmp;
+	for (auto &it : v) {
+		if (it.level == _clss) {
+			tmp.push_back(it);
+		}
+	}
+	sort(tmp.begin(), tmp.end(), cmp);
+	if (tmp.size() == 0) {
+		printf("NA\n");
+		return;
+	}
+	for (auto &it : tmp) {
+		printf("%s %d\n", it.origin.c_str(), it.score);
+	}
+}
+
+void query_site(int site) {
+	int stu_n=0, total=0;
+	for (auto &it : v) {
+		if (it.site == site) {
+			stu_n += 1;
+			total += it.score;
+		}
+	}
+	if (stu_n == 0) {
+		printf("NA\n");
+	}
+	else {
+		printf("%d %d\n", stu_n, total);
+	}
+}
+
+struct node
+{
+	int site;
+	int count;
+};
+bool cmp2(const node&a, const node&b) {
+	if (a.count == b.count) {
+		return a.site < b.site;
+	}
+	return a.count > b.count;
+}
+void query_date(int date) {
+	unordered_map<int, int> _map;
+	for (auto &it : v) {
+		if (it.date == date) {
+			_map[it.site]++;
+		}
+	}
+	if (_map.size() == 0) {
+		printf("NA\n");
+		return;
+	}
+	vector<node> tmp;
+	for (auto &it : _map) {
+		node n;
+		n.site = it.first;
+		n.count = it.second;
+		tmp.push_back(n);
+	}
+	sort(tmp.begin(), tmp.end(), cmp2);
+	for (auto &it : tmp) {
+		printf("%03d %d\n", it.site, it.count);
+	}
+}
+
+int main()
+{
+	freopen("data.txt", "r", stdin);
+	cin >> stu_count >> query_count;
+	FOR(i, 0, stu_count) {
+		string a; int b;
+		cin >> a >> b;
+		v.push_back(*new student(a, b));
+	}
+	FOR(i, 0, query_count) {
+		READ_INT(a);
+		int b; char c;
+		switch (a)
+		{
+		case 1:
+			cin >> c;
+			printf("Case %d: %d %c\n", i+1, a, c);
+			query_class(c);
+			break;
+		case 2:
+			cin >> b;
+			printf("Case %d: %d %03d\n", i+1, a, b);
+			query_site(b);
+			break;
+		case 3:
+			cin >> b;
+			printf("Case %d: %d %06d\n", i+1, a, b);
+			query_date(b);
+			break;
+		default:
+			break;
+		}
+	}
+}
