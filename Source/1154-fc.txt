@@ -1,0 +1,59 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#define FOR(a,j,k) for(int a=(j);a<(k);a++)
+#define READ_INT(i) int i;cin>>i
+#define MEMSET(a,b,c,d) memset(a,b,sizeof(c)*d)
+#define MEMSET_0(a,c,d) MEMSET(a,0,c,d)
+#define MEMSET_MAX(a,c,d) MEMSET(a,0x3f,c,d)
+#define MEMSET_MIN(a,c,d) MEMSET(a,-0x3f,c,d)
+#include<vector>
+#include<cstdio>
+#include<set>
+using namespace std;
+struct node {
+	int color;
+	vector<int> adj;
+}*li;
+
+int v_count, e_count;
+bool* vis;
+bool check() {
+	FOR(i, 0, v_count) {
+		int len = li[i].adj.size();
+		FOR(j, 0, len) {
+			if (li[li[i].adj[j]].color == li[i].color) { return false; }
+		}
+	}
+	return true;
+}
+
+
+
+int main()
+{
+	//freopen("data.txt", "r", stdin);
+	cin >> v_count >> e_count;
+	li = new node[v_count];
+	vis = new bool[v_count];
+	FOR(i, 0, e_count) {
+		READ_INT(a);
+		READ_INT(b);
+		li[a].adj.push_back(b);
+		li[b].adj.push_back(a);
+	}
+
+	READ_INT(query_count);
+	FOR(i, 0, query_count) {
+		set<int> s;
+		FOR(j, 0, v_count) {
+			cin>>li[j].color;
+			s.insert(li[j].color);
+		}
+		if (check()) {
+			printf("%d-coloring\n", s.size());
+		}
+		else {
+			printf("No\n");
+		}
+	}
+}
