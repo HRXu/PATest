@@ -1,0 +1,80 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;scanf("%d",&i)
+using namespace std;
+int v_count,e_count,query_count;
+
+int **adj;
+bool *vis;
+bool check(vector<int>& arr){
+    int len=arr.size();
+    if(len!=v_count+1)return false;
+    if(arr[0]!=arr[len-1])return false;
+    MEMSET_0(vis,bool,v_count);
+    for(int i=0;i<len-1;i++){
+        vis[arr[i]]=true;
+        if(adj[arr[i]][arr[i+1]]==0x3f3f3f3f){
+            return false;
+        }
+    }
+
+    FOR(i,0,v_count){
+        if(!vis[i])return false;
+    }
+    return true;
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>v_count>>e_count;
+    adj=new int*[v_count];
+    FOR(i,0,v_count){
+        adj[i]=new int[v_count];
+        MEMSET_MAX(adj[i],int,v_count);
+    }
+    vis=new bool[v_count];
+    FOR(i,0,e_count){
+        READ_INT(a);READ_INT(b);
+        adj[a-1][b-1]=adj[b-1][a-1]=1;
+        adj[a-1][a-1]=adj[b-1][b-1]=1;
+    }
+    cin>>query_count;
+    vector<int> query_arr;
+    FOR(i,0,query_count){
+        READ_INT(tmp);
+        FOR(j,0,tmp){
+            READ_INT(a);
+            query_arr.push_back(a-1);
+        }
+        if(check(query_arr)){
+            printf("YES\n");
+        }else{
+            printf("NO\n");
+        }
+        query_arr.clear();
+    }
+	return 0;
+}
+
+
+
+
+
+
+

@@ -1,0 +1,81 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;scanf("%d",&i)
+using namespace std;
+int v_count,e_count,query_count;
+bool* vis;
+struct edge{
+    int _start;
+    int _end;
+}*edge_list;
+
+bool check(set<int>& arr){
+    MEMSET_0(vis,bool,e_count);
+    auto it_end=arr.end();
+    FOR(i,0,e_count){
+        if(arr.find(edge_list[i]._start)!=it_end)vis[i]=true;
+        if(arr.find(edge_list[i]._end)!=it_end)vis[i]=true;
+    }
+
+    FOR(i,0,e_count){
+        if(!vis[i]) return false;
+    }
+    return true;
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>v_count>>e_count;
+
+    edge_list=new edge[e_count];
+    vis=new bool[e_count];
+
+    FOR(i,0,e_count){
+        cin>>edge_list[i]._start;
+        cin>>edge_list[i]._end;
+    }
+    cin>>query_count;
+
+    set<int> arr;
+    FOR(i,0,query_count){
+        READ_INT(tmp);
+        FOR(j,0,tmp){
+            READ_INT(a);
+            arr.insert(a);
+        }
+        if(check(arr)){
+            printf("Yes\n");
+        }
+        else{
+            printf("No\n");
+        }
+
+        arr.clear();
+    }
+
+
+	return 0;
+}
+
+
+
+
+
+
+
