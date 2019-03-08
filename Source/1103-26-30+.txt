@@ -1,0 +1,110 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;scanf("%d",&i)
+using namespace std;
+int n,k,p;
+int d;
+vector<vector<int>> res;
+stack<int> st;
+
+bool cmp2(int& a,int& b){return a>b;}
+void cp(stack<int> _s){
+    stack<int> tmp(_s);
+    vector<int> foo;
+    int len=tmp.size();
+    foo.resize(k);
+    for(int i=0;i<k;i++){
+        foo[i]=_s.top();
+        _s.pop();
+    }
+    res.push_back(foo);
+}
+
+bool cmp(vector<int> &a,vector<int>&b){
+    for(int i=0;i<k;i++){
+        if(a[i]!=b[i])return a[i]>b[i];
+    }
+    return false;
+}
+
+
+
+
+int max_sum=-1;
+void dfs(int lev,int value,int sum){
+
+    if(lev==k){
+        if(value==0){
+            if(sum>max_sum){
+                max_sum=max(sum,max_sum);
+                res.clear();
+                cp(st);
+            }
+            else if(sum==max_sum){
+                cp(st);
+            }
+        }
+        return;
+    }
+    if(value<0)return;
+    for(int i=lev==0?1:st.top();i<=d;i++){
+        st.push(i);
+        int tmp=value-i*i;
+        if(tmp<0){
+            st.pop();
+            return;
+        }
+        if(tmp==0&&lev+1!=k){
+            st.pop();
+            return;
+        }
+        dfs(lev+1,tmp,sum+i);
+        st.pop();
+    }
+}
+
+
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>n>>k>>p;
+    d=(int)sqrt(n);
+
+    dfs(0,n,0);
+    if(res.size()==0){
+        printf("Impossible");
+    }
+    else{
+        sort(res.begin(),res.end(),cmp);
+        printf("%d = ",n);
+        FOR(i,0,k){
+            if(i==k-1){
+                printf("%d^%d",res[0][i],p);
+            }
+            else{
+                printf("%d^%d + ",res[0][i],p);
+            }
+        }
+    }
+	return 0;
+}
+
+
+
+

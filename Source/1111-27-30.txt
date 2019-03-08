@@ -1,0 +1,205 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;scanf("%d",&i)
+using namespace std;
+int v_count,e_count;
+
+int** adj;
+int** timeAdj;
+
+int* pre;
+bool* vis;
+int *dist;
+int *cost;
+
+vector<int> shortest;
+vector<int> fast;
+int _distance;
+int _time;
+
+void DijkstraDistance(int _start,int _end){
+
+    MEMSET_MAX(dist,int,v_count);
+    MEMSET_MAX(cost,int,v_count);
+    FOR(i,0,v_count)pre[i]=i;
+    MEMSET_0(vis,bool,v_count);
+
+
+    FOR(i,0,v_count){
+        if(adj[_start][i]!=0x3f3f3f3f){
+            dist[i]=adj[_start][i];
+            cost[i]=timeAdj[_start][i];
+            pre[i]=_start;
+       }
+    }
+    vis[_start]=true;
+
+    FOR(i,0,v_count){
+        int n=0,_min=0x3f3f3f3f;
+        FOR(j,0,v_count){
+            if(!vis[j]&&dist[j]<_min){
+                n=j;_min=dist[j];
+            }
+        }
+        vis[n]=true;
+        FOR(j,0,v_count){
+            if(!vis[j]&&dist[j]>adj[n][j]+dist[n]){
+                dist[j]=adj[n][j]+dist[n];
+                cost[j]=timeAdj[n][j]+cost[n];
+                pre[j]=n;
+            }else if(!vis[j]&&dist[j]==adj[n][j]+dist[n]){
+                if(cost[j]>timeAdj[n][j]+cost[n]){
+                    dist[j]=adj[n][j]+dist[n];
+                    cost[j]=timeAdj[n][j]+cost[n];
+                    pre[j]=n;
+                }
+            }
+        }
+    }
+
+    int p=_end;
+    while(p!=pre[p]){
+        shortest.push_back(p);
+        p=pre[p];
+    }
+    shortest.push_back(_start);
+    _distance=dist[_end];
+}
+
+void DijkstraTime(int _start,int _end){
+
+    MEMSET_MAX(dist,int,v_count);
+    MEMSET_MAX(cost,int,v_count);
+    FOR(i,0,v_count)pre[i]=i;
+    MEMSET_0(vis,bool,v_count);
+
+    FOR(i,0,v_count){
+        if(adj[_start][i]!=0x3f3f3f3f){
+            dist[i]=1;
+            cost[i]=timeAdj[_start][i];
+            pre[i]=_start;
+       }
+    }
+    vis[_start]=true;
+
+    FOR(i,0,v_count){
+        int n,_min=0x3f3f3f3f;
+        FOR(j,0,v_count){
+            if(!vis[j]&&cost[j]<_min){
+                n=j;_min=cost[j];
+            }
+        }
+        vis[n]=true;
+        FOR(j,0,v_count){
+            if(!vis[j]&&cost[j]>timeAdj[n][j]+cost[n]){
+                dist[j]++;
+                cost[j]=timeAdj[n][j]+cost[n];
+                pre[j]=n;
+            }else if(!vis[j]&&cost[j]==timeAdj[n][j]+cost[n]){
+                if(dist[j]>1+dist[j]){
+                    dist[j]++;
+                    cost[j]=timeAdj[n][j]+cost[n];
+                    pre[j]=n;
+                }
+            }
+        }
+    }
+
+    int p=_end;
+    while(p!=pre[p]){
+        fast.push_back(p);
+        p=pre[p];
+    }
+    fast.push_back(_start);
+    _time=cost[_end];
+}
+
+
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>v_count>>e_count;
+    adj=new int*[v_count];
+    timeAdj=new int*[v_count];
+
+    pre=new int[v_count];
+    vis=new bool[v_count];
+    dist=new int[v_count];
+    cost=new int[v_count];
+
+    FOR(i,0,v_count){
+        adj[i]=new int[v_count];
+        MEMSET_MAX(adj[i],int,v_count);
+        timeAdj[i]=new int[v_count];
+        MEMSET_MAX(timeAdj[i],int,v_count);
+    }
+
+    FOR(i,0,e_count){
+        int a,b,c,d,e;
+        cin>>a>>b>>c>>d>>e;
+        if(c==0){
+            adj[a][b]=adj[b][a]=d;
+            timeAdj[a][b]=timeAdj[b][a]=e;
+        }else{
+            adj[a][b]=d;
+            timeAdj[a][b]=e;
+        }
+    }
+
+    READ_INT(_start);READ_INT(_end);
+    DijkstraDistance(_start,_end);
+    DijkstraTime(_start,_end);
+
+    if(fast==shortest){
+        printf("Distance = %d; ",_distance);
+        printf("Time = %d: ",_time);
+        for(int i=shortest.size()-1;i>=0;i--){
+            if(i==0){
+                printf("%d",shortest[i]);
+            }
+            else{
+                printf("%d -> ",shortest[i]);
+            }
+        }
+    }else{
+        printf("Distance = %d: ",_distance);
+        for(int i=shortest.size()-1;i>=0;i--){
+            if(i==0){
+                printf("%d\n",shortest[i]);
+            }
+            else{
+                printf("%d -> ",shortest[i]);
+            }
+        }
+        printf("Time = %d: ",_time);
+        for(int i=fast.size()-1;i>=0;i--){
+            if(i==0){
+                printf("%d\n",fast[i]);
+            }
+            else{
+                printf("%d -> ",fast[i]);
+            }
+        }
+    }
+	return 0;
+}
+
+
+
+

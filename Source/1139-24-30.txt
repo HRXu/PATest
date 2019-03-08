@@ -1,0 +1,97 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;scanf("%d",&i)
+using namespace std;
+int v_count,e_count;
+
+unordered_map<int,set<int>> adj_map;
+
+struct node{
+    int a1;
+    int b2;
+    node(int _a1,int _b2){
+        a1=_a1;b2=_b2;
+    }
+};
+bool cmp(const node&a,const node&b){
+    if(a.a1==b.a1){
+        return a.b2<b.b2;
+    }
+    return a.a1<b.a1;
+}
+void query(int a,int b){
+    vector<node> res;
+    if(a*b<0){
+        set<int>& b_friends=adj_map[b];
+        set<int>& a_friends=adj_map[a];
+        for(auto &it_a:a_friends){
+            if(it_a*a<0)continue;
+
+            set<int>& aa_friends=adj_map[it_a];
+            for(auto &it_aa:aa_friends){
+                if(it_a*it_aa>0)continue;
+                if(b_friends.find(it_aa)!=b_friends.end()){
+                    res.push_back(*new node(abs(it_a),abs(it_aa)));
+                }
+            }
+        }
+    }
+    else{
+        set<int>& b_friends=adj_map[b];
+        set<int>& a_friends=adj_map[a];
+        for(auto &it_a:a_friends){
+            if(it_a*a<0)continue;
+
+            set<int>& aa_friends=adj_map[it_a];
+            for(auto &it_aa:aa_friends){
+                if(it_a*it_aa<0)continue;
+                if(b_friends.find(it_aa)!=b_friends.end()){
+                    res.push_back(*new node(abs(it_a),abs(it_aa)));
+                }
+            }
+        }
+    }
+    int len=res.size();
+    sort(res.begin(),res.end(),cmp);
+    printf("%d\n",len);
+    FOR(i,0,len){
+        printf("%04d %04d\n",res[i].a1,res[i].b2);
+    }
+}
+
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>v_count>>e_count;
+    FOR(i,0,e_count){
+        READ_INT(a);READ_INT(b);
+        adj_map[a].insert(b);
+        adj_map[b].insert(a);
+    }
+    READ_INT(query_count);
+    FOR(i,0,query_count){
+        READ_INT(a);READ_INT(b);
+        query(a,b);
+    }
+	return 0;
+}
+
+
+
+
