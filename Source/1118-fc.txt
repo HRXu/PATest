@@ -1,0 +1,78 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+using namespace std;
+
+int tree_count;
+bool vis[10001];
+int pre[10001];
+
+int _find(int k){
+    if(pre[k]==k)return k;
+    return pre[k]=_find(pre[k]);
+}
+
+void _union(int k1,int k2){
+    int a=_find(k1);
+    int b=_find(k2);
+    pre[a]=b;
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>tree_count;
+
+    FOR(i,0,10001){
+        pre[i]=i;
+    }
+
+    FOR(i,0,tree_count){
+        READ_INT(tmp);
+        int k;
+        FOR(j,0,tmp){
+            READ_INT(foo);
+            vis[foo]=true;
+            if(j==0)k=foo;
+            _union(foo,k);
+        }
+    }
+
+    set<int> d;
+    int total=0;
+    FOR(i,0,10001){
+        if(vis[i]){
+            total++;
+            d.insert(_find(i));
+        }
+    }
+    printf("%d %d\n",d.size(),total);
+
+    READ_INT(query_count);
+    FOR(i,0,query_count){
+        READ_INT(a);
+        READ_INT(b);
+        if(_find(a)==_find(b))printf("Yes\n");
+        else printf("No\n");
+    }
+	return 0;
+}
+
+
+
+

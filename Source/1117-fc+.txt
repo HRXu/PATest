@@ -1,0 +1,44 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+using namespace std;
+
+int _count;
+
+int *num;
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>_count;
+    num=new int[_count];
+    int res=_count;
+    FOR(i,0,_count){
+        cin>>num[i];
+    }
+    sort(num,num+_count);
+    for(;res>=0;res--){
+        if(num[_count-res]>res)break;
+    }
+    printf("%d",res);
+	return 0;
+}
+
+
+
+

@@ -1,0 +1,81 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+using namespace std;
+
+int _count;
+int* pre_order;
+int* post_order;
+struct node{
+    int key;
+    node* lchild=nullptr;
+    node* rchild=nullptr;
+}*root;
+bool flag=true;
+node* build(int pre_begin,int pre_end,int post_end){
+    if(pre_begin>pre_end)return nullptr;
+
+    node *root=new node();
+    root->key=post_order[post_end];
+
+    if(pre_begin==pre_end)return root;
+    int _pos=pre_begin;
+    for(;post_order[post_end-1]!=pre_order[_pos];_pos++);
+
+    root->rchild=build(_pos,pre_end,post_end-1);
+    root->lchild=build(pre_begin+1,_pos-1,post_end-(pre_end-_pos+1)-1);
+
+    if(_pos-pre_begin==1){
+        flag=false;
+    }
+    return root;
+}
+void dfs(vector<int> &v,node* root){
+    if(root==nullptr)return;
+    dfs(v,root->lchild);
+    v.push_back(root->key);
+    dfs(v,root->rchild);
+}
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>_count;
+    vector<int> res;
+
+    pre_order=new int[_count];
+    post_order=new int[_count];
+    FOR(i,0,_count){
+        cin>>pre_order[i];
+    }
+    FOR(i,0,_count){
+        cin>>post_order[i];
+    }
+    node *root=build(0,_count-1,_count-1);
+    dfs(res,root);
+
+    printf("%s\n",flag?"Yes":"No");
+    for(int i=0,len=res.size();i<len;i++){
+        printf("%d%c",res[i],i==len-1?'\n':' ');
+    }
+	return 0;
+}
+
+
+
+
