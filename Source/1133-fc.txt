@@ -1,0 +1,71 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+using namespace std;
+int threshold;
+
+struct node{
+    int addr;
+    int key;
+    int next=-1;
+};
+int _begin,node_count;
+node li[100000];
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>_begin>>node_count>>threshold;
+
+    FOR(i,0,node_count){
+        READ_INT(a);
+        cin>>li[a].key>>li[a].next;
+        li[a].addr=a;
+    }
+
+    vector<node> in;
+    vector<node> rest;
+    vector<node> total;
+    for(int i=_begin;i!=-1;i=li[i].next){
+        if(li[i].key<0)total.push_back(li[i]);
+        else if(li[i].key<=threshold) in.push_back(li[i]);
+        else rest.push_back(li[i]);
+    }
+
+    for(auto &it:in){
+        total.push_back(it);
+    }
+    for(auto &it:rest){
+        total.push_back(it);
+    }
+
+    int len=total.size();
+    for(int i=0;i<len;i++){
+        if(i==len-1){
+            printf("%05d %d -1\n",total[i].addr,total[i].key);
+        }else{
+            printf("%05d %d %05d\n",total[i].addr,total[i].key,total[i+1].addr);
+        }
+    }
+
+	return 0;
+}
+
+
+
+

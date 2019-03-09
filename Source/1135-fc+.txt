@@ -1,0 +1,120 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+using namespace std;
+int query_count;
+
+struct node{
+    bool isBlack=true;
+    node* lchild=nullptr;
+    node* rchild=nullptr;
+    int height=0;
+    int value;
+};
+
+int getHeight(node *root){
+    if(root==nullptr) return 0;
+    return root->height;
+}
+node* _insert(node* root,int value){
+    if(root==nullptr){
+        root=new node();
+        if(value>0){
+            root->isBlack=true;
+        }
+        else{
+            root->isBlack=false;
+        }
+        root->value=abs(value);
+    }
+    else if(abs(value)<=root->value){
+       root->lchild= _insert(root->lchild,value);
+    }else{
+       root->rchild= _insert(root->rchild,value);
+    }
+
+
+    int l=getHeight(root->lchild);
+    int r=getHeight(root->rchild);
+    if(root->isBlack) root->height= max(l,r)+1;
+    else root->height=max(l,r);
+
+    return root;
+}
+
+bool flag=true;
+void judge(node *root){
+    if(root==nullptr)return;
+
+    if(root->lchild!=nullptr){
+        if(!root->lchild->isBlack &&!root->isBlack){
+            flag=false;
+            return;
+        }
+    }
+    if(root->rchild!=nullptr){
+        if(!root->rchild->isBlack&&!root->isBlack){
+            flag=false;
+            return;
+        }
+    }
+    judge(root->lchild);
+    judge(root->rchild);
+}
+
+void judge2(node *root){
+    if(root==nullptr) return;
+    if(getHeight(root->rchild)!=getHeight(root->lchild)){
+        flag=false;
+        return;
+    }
+    judge2(root->lchild);
+    judge2(root->rchild);
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>query_count;
+
+    FOR(i,0,query_count){
+        READ_INT(tmp);
+        node *root=nullptr;
+        FOR(j,0,tmp){
+            READ_INT(a);
+            root=_insert(root,a);
+        }
+        flag=true;
+        judge(root);
+        judge2(root);
+        if(!root->isBlack) flag=false;
+
+        if(flag){
+            printf("Yes\n");
+        }else{
+            printf("No\n");
+        }
+    }
+
+	return 0;
+}
+
+
+
+

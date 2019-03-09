@@ -1,0 +1,103 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+
+using namespace std;
+
+int query_count,threshold;
+
+struct node{
+    int id;
+    int _count;
+    node(int _id,int _ct){
+        id=_id;
+        _count=_ct;
+    }
+    bool operator< (const node& b) const
+    {
+        if(_count==b._count){
+            return id<b.id;
+        }
+        return _count>b._count;
+    }
+};
+
+set<node> m;
+unordered_map<int,int> m1;
+void _insert(int key){
+    auto it=m.find(node(key,m1[key]));
+    if(it!=m.end()){
+        node n(it->id,it->_count+1);
+        m.erase(it);
+        m.insert(n);
+        m1[key]++;
+    }
+    else{
+        node n(key,1);
+        m.insert(n);
+        m1[key]++;
+    }
+
+}
+void check(){
+    int len=m.size();
+    int i=0;
+    if(len>=threshold){
+        for(auto it=m.begin();i<threshold;i++,it++){
+            if(i==threshold-1){
+                printf("%d\n",it->id);
+            }
+            else{
+                printf("%d ",it->id);
+            }
+        }
+        return;
+    }
+    for(auto it=m.begin();i<len;i++,it++){
+        if(i==len-1){
+            printf("%d\n",it->id);
+        }
+        else{
+            printf("%d ",it->id);
+        }
+    }
+    return;
+}
+
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>query_count>>threshold;
+
+    READ_INT(first);
+    _insert(first);
+
+    FOR(i,1,query_count){
+        READ_INT(tmp);
+        printf("%d: ",tmp);
+        check();
+        _insert(tmp);
+    }
+	return 0;
+}
+
+
+
+

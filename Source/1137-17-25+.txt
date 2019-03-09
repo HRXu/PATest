@@ -1,0 +1,95 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+using namespace std;
+int online_count,mid_term,final_term;
+
+struct score{
+    int online=-1;
+    int mid_term=-1;
+    int final_term=-1;
+    int total=-1;
+    string name;
+};
+unordered_map<string,score> m;
+
+bool cmp(const score&a,const score&b){
+    if(a.total==b.total){
+        return a.name<b.name;
+    }
+    return a.total>b.total;
+}
+
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>online_count>>mid_term>>final_term;
+    FOR(i,0,online_count){
+        string na;int a;
+        cin>>na>>a;
+        m[na].online=a;
+    }
+    FOR(i,0,mid_term){
+        string na;int a;
+        cin>>na>>a;
+        m[na].mid_term=a;
+    }
+    FOR(i,0,final_term){
+        string na;int a;
+        cin>>na>>a;
+        m[na].final_term=a;
+    }
+
+    vector<score> v;
+    for(auto &it:m){
+        it.second.name=it.first;
+        score &s=it.second;
+
+        if(s.online<200)continue;
+        if(s.mid_term!=-1&&s.final_term!=-1){
+            if(s.mid_term>s.final_term){
+                s.total=(int)(0.4*s.mid_term+0.6*s.final_term+0.5);
+            }
+            else{
+                s.total=(int)s.final_term;
+            }
+        }
+        else if(s.mid_term!=-1){
+            s.total=(int)s.mid_term;
+        }
+        else if(s.final_term!=-1){
+            s.total=(int)s.final_term;
+        }
+
+        if(s.total<60)continue;
+        v.push_back(s);
+    }
+
+    sort(v.begin(),v.end(),cmp);
+    for(auto &it:v){
+        printf("%s %d %d %d %d\n",it.name.c_str(),it.online,it.mid_term,it.final_term,it.total);
+    }
+
+	return 0;
+}
+
+
+
+

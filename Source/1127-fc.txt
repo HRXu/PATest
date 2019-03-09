@@ -1,0 +1,117 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+
+using namespace std;
+
+int* post_order,*in_order;
+int _count;
+
+struct node{
+    int key;
+    node* lchild=nullptr;
+    node* rchild=nullptr;
+};
+
+node* build(int in_begin,int in_end,int post_end){
+    if(in_begin>in_end) return nullptr;
+    node* root=new node();
+    root->key=post_order[post_end];
+    int _pos=in_begin;
+    for(;in_order[_pos]!=post_order[post_end];_pos++);
+
+    root->lchild=build(in_begin,_pos-1,post_end-(in_end-_pos)-1);
+    root->rchild=build(_pos+1,in_end,post_end-1);
+    return root;
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>_count;
+    in_order=new int[_count];
+    post_order=new int[_count];
+    FOR(i,0,_count){
+        cin>>in_order[i];
+    }
+    FOR(j,0,_count){
+        cin>>post_order[j];
+    }
+
+    node* root=build(0,_count-1,_count-1);
+
+    bool dirRight=false;
+    int cnt=0;
+
+    queue<node*> qu;
+    queue<node*> qu2;
+
+    qu.push(root);
+
+    while(cnt!=_count){
+        if(dirRight){
+            while(qu2.size()!=0){
+                node* tmp=qu2.front();
+                cnt++;
+
+                if(cnt==_count){
+                    printf("%d",tmp->key);
+                    break;
+                }
+                else{
+                    printf("%d ",tmp->key);
+                }
+
+                if(tmp->lchild!=nullptr)qu.push(tmp->lchild);
+                if(tmp->rchild!=nullptr)qu.push(tmp->rchild);
+                qu2.pop();
+            }
+            dirRight=!dirRight;
+
+        }else{
+
+            vector<int> foo;
+            while(qu.size()!=0){
+                node* tmp=qu.front();
+                foo.push_back(tmp->key);
+
+                if(tmp->lchild!=nullptr)qu2.push(tmp->lchild);
+                if(tmp->rchild!=nullptr)qu2.push(tmp->rchild);
+                qu.pop();
+            }
+            dirRight=!dirRight;
+
+            for(int i=foo.size()-1;i>=0;i--,cnt++){
+                if(cnt==_count-1){
+                    printf("%d",foo[i]);
+                }
+                else{
+                    printf("%d ",foo[i]);
+                }
+            }
+        }
+    }
+
+
+	return 0;
+}
+
+
+
+
