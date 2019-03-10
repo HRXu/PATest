@@ -1,0 +1,116 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+using namespace std;
+int max_capacity,v_count,_end,e_count;
+
+
+struct path{
+    vector<int> p;
+    int carry;
+    int dis;
+    path(stack<int>& _st,int _carry,int _dis){
+        stack<int> tmp(_st);
+        carry=_carry;
+        dis=_dis;
+        while(!tmp.empty()){
+            p.push_back(tmp.top());
+            tmp.pop();
+        }
+    }
+};
+
+ vector<path> v;
+bool cmp(const path&a,const path&b){
+    if(a.carry*b.carry<0){
+        return a.carry<b.carry;
+    }
+    return abs(a.carry)<abs(b.carry);
+}
+
+
+int** adj;
+int* rest;
+bool* vis;
+
+stack<int> st;
+int _min_dist=0x3f3f3f3f;
+void dfs(int _root,int carry,int dist){
+    vis[_root]=true;
+    st.push(_root);
+    carry+=rest[_root];
+    if(_root==_end){
+        if(dist<_min_dist){
+            v.clear();
+            _min_dist=dist;
+            v.push_back(*new path(st,carry,dist));
+        }else if(dist==_min_dist){
+            v.push_back(*new path(st,carry,dist));
+        }
+    }
+    else{
+        FOR(i,0,v_count){
+            if(!vis[i]&&adj[_root][i]!=0x3f3f3f3f){
+                dfs(i,carry,dist+adj[_root][i]);
+            }
+        }
+    }
+    st.pop();
+    vis[_root]=false;
+}
+
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>max_capacity>>v_count>>_end>>e_count;
+    v_count++;
+    adj=new int*[v_count];
+    FOR(i,0,v_count){
+        adj[i]=new int[v_count];
+        MEMSET_MAX(adj[i],int,v_count);
+    }
+
+    rest=new int[v_count];
+    rest[0]=0;
+    vis=new bool[v_count];
+    MEMSET_0(vis,bool,v_count);
+
+    FOR(i,1,v_count){
+        cin>>rest[i];
+        rest[i]=rest[i]-max_capacity/2;
+    }
+
+    FOR(i,0,e_count){
+        READ_INT(a);READ_INT(b);READ_INT(c);
+        adj[a][b]=adj[b][a]=c;
+    }
+
+    dfs(0,0,0);
+    sort(v.begin(),v.end(),cmp);
+    printf("%d ",v[0].carry>0?0:-v[0].carry);
+    for(int i=v[0].p.size()-1;i>=0;i--){
+        printf("%d%s",v[0].p[i],i==0?" ":"->");
+    }
+    printf("%d",v[0].carry<0?0:v[0].carry);
+	return 0;
+}
+
+
+
+

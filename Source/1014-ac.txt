@@ -1,0 +1,111 @@
+#include<cstdio>
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cstdlib>
+#include<cstring>
+#include<queue>
+#include<cmath>
+#include<map>
+#include<unordered_map>
+#include<unordered_set>
+#include<set>
+#include<regex>
+#define FOR(i,a,b) for( int i=(a);i<(b);++i)
+#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
+#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
+#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
+#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
+#define READ_INT(i) int i;cin>>i
+using namespace std;
+int windows_count,queue_lenth,customers_count,query_count;
+struct node{
+    int end_time=-1;
+    int during;
+}*customers;
+int time_now=8*60;
+vector<queue<node*>> windows;
+
+int find_min(int &in){
+    int _min=0x3f3f3f3f;
+    FOR(i,0,windows_count){
+        if(windows[i].empty())continue;
+
+        node* tmp=windows[i].front();
+        if(tmp->end_time<_min){
+            in=i;
+            _min=tmp->end_time;
+        }
+    }
+    return 0;
+}
+int isFull(){
+    int _min=0x3f3f3f3f;
+    int n;
+    FOR(i,0,windows_count){
+        if(windows[i].size()<_min){
+            _min=windows[i].size();
+            n=i;
+        }
+    }
+    if(_min>=queue_lenth)return -1;
+    return n;
+}
+
+
+int main()
+{
+   // freopen("data.txt","r",stdin);
+    cin>>windows_count>>queue_lenth>>customers_count>>query_count;
+	customers=new node[customers_count];
+	windows.resize(windows_count);
+
+	FOR(i,0,customers_count){
+        cin>>customers[i].during;
+	}
+
+	int index=0;
+	int finished=0;
+    while(finished!=customers_count){
+        int in=isFull();
+        if(in!=-1){
+            if(index<customers_count){
+                if(windows[in].empty()){
+                    customers[index].end_time=time_now+customers[index].during;
+                }
+                windows[in].push(customers+index);
+                index++;
+                continue;
+            }
+        }
+        int i;
+        find_min(i);
+        node *tmp=windows[i].front();
+        time_now=tmp->end_time;
+        windows[i].pop();
+
+        if(!windows[i].empty()){
+            node *foo=windows[i].front();
+            foo->end_time=foo->during+time_now;
+        }
+
+        finished++;
+    }
+
+    FOR(i,0,query_count){
+        READ_INT(tmp);
+        tmp--;
+        int t=customers[tmp].end_time;
+        int _begin=customers[tmp].end_time-customers[tmp].during;
+        if(_begin>=17*60){
+            printf("Sorry\n");
+            continue;
+        }
+        printf("%02d:%02d\n",t/60,t%60);
+    }
+	return 0;
+}
+
+
+
+
