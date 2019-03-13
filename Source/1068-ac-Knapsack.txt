@@ -1,0 +1,74 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+#include<map>
+#include<queue>
+#define MEMSET_MIN(i,j,k) memset(i,-0x3f,sizeof(j)*(k))
+#define MEMSET_0(i,j,k) memset(i,0,sizeof(j)*(k))
+using namespace std;
+int *weight;
+int *dp;
+bool **mark;
+
+int length, capacity;
+bool cmp(int& a, int &b) { return a > b; }
+int main()
+{
+	freopen("data.txt","r",stdin);
+
+	cin >> length >> capacity;
+	weight = new int[length + 1];
+	weight[0] = 0;
+	for (int i = 1; i <= length; i++) {
+		cin >> weight[i];
+	}
+
+	sort(weight + 1, weight + 1 + length, cmp);
+
+	dp = new int[capacity + 1];
+	MEMSET_MIN(dp, int, capacity + 1);
+	dp[0] = 0;
+
+	mark = new bool*[length + 1];
+	for (int i = 0; i <= length; i++) {
+		mark[i] = new bool[capacity + 1];
+		memset(mark[i], 0, sizeof(bool)*(capacity + 1));
+	}
+
+	for (int i = 1; i <= length; i++) {
+		for (int j = capacity; j >=weight[i]; j--) {
+			int tmp = dp[j - weight[i]] + weight[i];
+			if (tmp >= dp[j]) {
+				dp[j] = tmp;
+				mark[i][j] = true;
+			}
+		}
+	}
+	if (dp[capacity] != capacity) {
+		printf("No Solution");
+		return 0;
+	}
+
+	vector<int> res;
+	int m = capacity;
+	int n = length;
+	while (m != 0) {
+		while (!mark[n][m])n--;
+		if (mark[n][m]) {
+			res.push_back(weight[n]);
+			m -= weight[n];
+			n--;
+		}
+	}
+
+	for (int i = 0,len=res.size(); i < len; i++) {
+		printf("%d%c", res[i],i==len-1?'\0':' ');
+	}
+	return 0;
+}
