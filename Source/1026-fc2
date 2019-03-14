@@ -1,0 +1,180 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+#include<unordered_map>
+#include<map>
+#include<queue>
+#define MEMSET_MIN(i,j,k) memset(i,-0x3f,sizeof(j)*(k))
+#define MEMSET_0(i,j,k) memset(i,0,sizeof(j)*(k))
+#define FOR(i,j,k) for(int i=(j);i<(k);++i)
+#define READ_INT(tmp) int tmp;cin>>tmp
+using namespace std;
+int end_time = 21 * 60 * 60;
+int time_now=8*3600;
+
+struct customer {
+	int begin_time;
+	int end_time;
+	
+	int arrived;
+	int during;
+	bool isVip;
+
+	bool served = false;
+};
+vector<customer> v;
+bool cmp(customer &c1, customer &c2) {
+	return c1.arrived < c2.arrived;
+}
+
+int table_count;
+struct  table
+{
+	int cnt=0;
+	bool hasPeople = false;
+	bool IsViptable = false;
+	int freetime = 8*3600;
+}*tables;
+vector<int> vip_tableList;
+
+
+int firstVip(int time) {
+	for (int i = 0, len = v.size(); i < len; i++) {
+		if (v[i].served)continue;
+		if (v[i].isVip && v[i].arrived<=time) return i;
+	}
+	return -1;
+}
+int firstPeople(int time) {
+	for (int i = 0, len = v.size(); i < len; i++) {
+		if (v[i].served)continue;
+		if (v[i].arrived <= time) return i;
+	}
+	return -1;
+}
+
+int findSmall() {
+	int _small = 0x3f3f3f3f;
+	FOR(i, 0, table_count) {
+		if (!tables[i].hasPeople)return -1;
+		_small = min(_small, tables[i].freetime);
+	}
+	return _small;
+}
+
+
+void display(customer &c) {
+	int tmp1 = c.arrived;
+	int hour1 = tmp1 / 3600;
+	tmp1 %= 3600;
+	int minute1 = tmp1 / 60;
+	tmp1 %=60;
+	
+	int tmp2 = c.begin_time;
+	int hour2 = tmp2 / 3600;
+	tmp2 %= 3600;
+	int minute2 = tmp2 / 60;
+	tmp2 %= 60;
+
+	int tmp3 = c.begin_time-c.arrived;
+	int minute3 = tmp3 / 60;
+	tmp3 %= 60;
+	if (tmp3 >= 30)minute3 ++;
+
+	printf("%02d:%02d:%02d %02d:%02d:%02d %d\n", hour1, minute1, tmp1, hour2, minute2, tmp2, minute3);
+}
+
+
+
+int main()
+{
+	freopen("data.txt","r",stdin);
+	int length;
+	cin >> length;
+	FOR(i, 0, length) {
+		int a, b, c, d, e;
+		scanf("%d:%d:%d %d %d",&a,&b,&c,&d,&e);
+		customer ctm;
+		ctm.arrived = a * 3600+b*60+c;
+		ctm.during = d>120?7200:d*60;
+		ctm.isVip = e;
+		v.push_back(ctm);
+	}
+	cin >> table_count;
+	tables = new table[table_count];
+	READ_INT(vip_table_count);
+	FOR(i, 0, vip_table_count) {
+		READ_INT(tmp);
+		vip_tableList.push_back(tmp-1);
+		tables[tmp - 1].IsViptable = true;
+	}
+
+	sort(v.begin(), v.end(), cmp);
+
+
+	while (time_now<end_time) {
+		//cleam table;
+		for (int i = 0; i < table_count; i++) {
+			table &t = tables[i];
+			if (t.hasPeople && t.freetime == time_now) {
+				t.hasPeople = false;
+			}
+		}
+
+		//add vip;
+		int foo = firstVip(time_now);
+		if (foo != -1) {
+			for (int i = 0; i < vip_table_count; i++) {
+				table &t = tables[vip_tableList[i]];
+
+				if (t.hasPeople) continue;			
+				v[foo].begin_time = time_now;
+				v[foo].end_time = time_now + v[foo].during;
+				v[foo].served = true;
+				t.hasPeople = true;
+				t.cnt++;
+				t.freetime = v[foo].end_time;
+				
+				display(v[foo]);
+
+				break;
+			}
+		};
+		//add ordinary
+		foo = firstPeople(time_now);
+		if (foo != -1) {
+			for (int i = 0; i < table_count; i++) {
+				table &t = tables[i];
+
+				if (t.hasPeople) continue;
+				v[foo].begin_time = time_now;
+				v[foo].end_time = time_now + v[foo].during;
+				v[foo].served = true;
+				t.hasPeople = true;
+				t.cnt++;
+				t.freetime = v[foo].end_time;
+				display(v[foo]);
+
+				break;
+			}
+		};
+		
+
+		int quz = findSmall();
+		if (quz == -1)time_now++;
+		else time_now = quz;
+	}
+
+
+	for (int i = 0; i < table_count; i++) {
+		printf("%d%c",tables[i].cnt, i == table_count - 1 ? '\0' : ' ');
+	}
+	return 0;
+}
+
