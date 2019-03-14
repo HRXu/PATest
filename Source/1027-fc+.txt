@@ -1,0 +1,39 @@
+#include <iostream>
+#include <cmath>
+#include <string>
+using namespace std;
+int trans(char* n, int radix) {
+	int i=0;
+	int res = 0;
+	while (n[i]!='\0')
+	{
+		i++;
+	}
+	i--;
+	for (int j = 0; i >=0; j++,i--)
+	{
+		int bar = 0;
+		if (n[i]>='A')
+		{
+			bar = (n[i] - 'A' + 13);
+		}
+		else
+		{
+			bar = (n[i] - '0');
+		}
+		res += bar * pow(radix, j);
+	}
+	return res;
+}
+
+int main()
+{
+	int a, b, c;
+	char r[13] = { '0','1','2' ,'3' ,'4' ,'5' ,'6' ,'7' ,'8' ,'9' ,'A' ,'B' ,'C' };
+	cin >> a;
+	cin >> b;
+	cin >> c;
+	printf("#%c%c%c%c%c%c", r[a / 13], r[a % 13], r[b / 13], r[b % 13], r[c / 13], r[c % 13]);
+	return 0;
+
+}
