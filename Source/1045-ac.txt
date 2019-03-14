@@ -1,0 +1,78 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<cstdio>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+#include<regex>
+#include<set>
+#include<unordered_map>
+#include<map>
+#include<queue>
+#define MEMSET_MIN(i,j,k) memset(i,-0x3f,sizeof(j)*(k))
+#define MEMSET_0(i,j,k) memset(i,0,sizeof(j)*(k))
+#define FOR(i,j,k) for(int i=(j);i<(k);++i)
+#define READ_INT(tmp) int tmp;cin>>tmp
+using namespace std;
+vector<int> stripe;
+unordered_map<int, bool> m;
+unordered_map<int,int> _pos;
+
+int* book;
+int* cnt_arr;
+
+int* dparr;
+
+int len;
+int _max = 0;
+void dp() {
+	for (int j = 1; j < len; j++) {
+		int _p = _pos[stripe[j]];
+		int _m = -1;
+		for (int i = _p; i >= 0; i--) {
+			_m = cnt_arr[i] > _m ? cnt_arr[i] : _m;
+		}
+		dparr[j] = _m + 1;
+		_max = max(_max, dparr[j]);
+		cnt_arr[_p] = dparr[j];
+	}
+}
+
+int main()
+{
+	//freopen("data.txt","r",stdin);
+	int length,_count;
+	cin >> length;
+	cin >> _count;
+
+	book = new int[_count];
+	cnt_arr = new int[_count];
+	MEMSET_0(cnt_arr, int, _count);
+
+	FOR(i, 0, _count) {
+		cin >> book[i];
+		m[book[i]] = true;
+		_pos[book[i]] = i;
+	}
+
+	cin >> len;
+	stripe.push_back(0);
+	for (int i = 0; i < len; i++) {
+		READ_INT(tmp);
+		if (m[tmp]) {
+			stripe.push_back(tmp);
+		}
+	}
+
+	len = stripe.size();
+	dparr = new int[len];
+	MEMSET_0(dparr, int, len);
+
+	dp();
+	printf("%d", _max);
+	return 0;
+}
+
+
+
