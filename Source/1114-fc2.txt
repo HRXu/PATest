@@ -1,126 +1,106 @@
-#include<cstdio>
+#define _CRT_SECURE_NO_WARNINGS
 #include<iostream>
+#include<cstdio>
+#include<string>
 #include<vector>
 #include<algorithm>
-#include<cstdlib>
-#include<cstring>
-#include<queue>
-#include<cmath>
-#include<map>
+#include<math.h>
+#include<regex>
+#include<set>
 #include<unordered_map>
 #include<unordered_set>
-#include<set>
-#include<regex>
-#define FOR(i,a,b) for( int i=(a);i<(b);++i)
-#define MEMSET(arr,value,type,length) memset(arr,value,sizeof(type)*length)
-#define MEMSET_0(arr,type,length) MEMSET(arr,0,type,length)
-#define MEMSET_MIN(arr,type,length) MEMSET(arr,-0x3f,type,length)
-#define MEMSET_MAX(arr,type,length) MEMSET(arr,0x3f,type,length)
-#define READ_INT(i) int i;cin>>i
+#include<map>
+#include<queue>
+#define MEMSET_MIN(i,j,k) memset(i,-0x3f,sizeof(j)*(k))
+#define MEMSET_MAX(i,j,k) memset(i,0x3f,sizeof(j)*(k))
+#define MEMSET_0(i,j,k) memset(i,0,sizeof(j)*(k))
+#define FOR(i,j,k) for(int i=(j);i<(k);++i)
+#define READ_INT(tmp) int tmp;scanf("%d",&tmp)
 using namespace std;
-int _count;
-
-struct family{
-    set<int,less<int> > member;
-    double estate=0;
-    double area=0;
-    double avg_estate=0;
-    double avg_area=0;
-};
-vector<family> li;
-
-struct person{
-    unordered_set<int> related;
-    double estate=0;
-    double area=0;
-    bool vis=false;
+int query_count;
+struct person {
+	vector<int> adj_m;
+	double estate = 0;
+	double area = 0;
 };
 
-unordered_map<int,person> id_map;
-unordered_map<int,bool> vis_map;
+unordered_map<int, person> adj_m;
+unordered_map<int,bool> vis;
 
-bool cmp(family&a,family&b){
-    if(a.avg_area==b.avg_area){
-        return (*a.member.begin())<(*b.member.begin());
-    }
-    return a.avg_area>b.avg_area;
+struct family
+{
+	set<int, less<int> > member;
+	double estate=0;
+	double area=0;
+	int id;
+	int cnt;
+};
+vector<family> v;
+
+void dfs(int key,double& estate,double& area,set<int,less<int> >&_set) {
+	vis[key] = true;
+	estate += adj_m[key].estate;
+	area += adj_m[key].area;
+	_set.insert(key);
+
+	for (auto &it : adj_m[key].adj_m) {
+		if (!vis[it]) {
+			dfs(it, estate, area,_set);
+		}
+	}
+}
+bool cmp(const family&f1, const family&f2) {
+	if (f1.area == f2.area) {
+		return f1.id < f2.id;
+	}
+	return f1.area > f2.area;
 }
 
-
-void dfs(int node,family&f){
-    if(node==0)return;
-
-    person &p=id_map[node];
-    f.estate+=p.estate;
-    f.area+=p.area;
-    f.member.insert(node);
-
-    vis_map[node]=true;
-
-    for(auto &it:p.related){
-        if(!vis_map[it])
-         dfs(it,f);
-    }
+void check() {
+	for (auto &it : adj_m) {
+		if (vis[it.first]) continue;
+		family f;
+		dfs(it.first, f.estate, f.area,f.member);
+		f.id = *f.member.begin();
+		f.cnt = f.member.size();
+		f.estate /= f.cnt;
+		f.area /= f.cnt;
+		v.push_back(f);
+	}
+	printf("%d\n", v.size());
+	sort(v.begin(), v.end(), cmp);
+	for (auto &it : v) {
+		printf("%04d %d %0.3f %0.3f\n", it.id, it.cnt, it.estate, it.area);
+	}
 }
-
 
 int main()
 {
-    freopen("data.txt","r",stdin);
-    cin>>_count;
+	freopen("data.txt","r",stdin);
+	cin >> query_count;
+	FOR(i, 0, query_count) {
+		int id, f, m, c;
+		cin >> id >> f >> m >> c;
+		
+		person &d = adj_m[id];
+		vector<int> &vd = d.adj_m;
 
-    FOR(i,1,_count+1){
-        READ_INT(id);
-
-        id++;
-        person& p=id_map[id];
-        READ_INT(a);
-        READ_INT(b);
-        if(a!=-1){
-            a++;
-            p.related.insert(a);
-            id_map[a].related.insert(id);
-        }
-        if(b!=-1){
-            b++;
-            p.related.insert(b);
-            id_map[b].related.insert(id);
-        }
-
-        READ_INT(c);
-        FOR(j,0,c){
-            READ_INT(tmp);
-            tmp++;
-            p.related.insert(tmp);
-            id_map[tmp].related.insert(id);
-        }
-        cin>>p.estate>>p.area;
-    }
-
-
-    for(auto &it:id_map){
-        if(vis_map[it.first])continue;
-        family f;
-        dfs(it.first,f);
-        f.avg_area=f.area/f.member.size();
-        f.avg_estate=f.estate/f.member.size();
-        li.push_back(f);
-
-    }
-
-
-    sort(li.begin(),li.end(),cmp);
-
-    printf("%d\n",li.size());
-    for(auto &it:li){
-        int len=it.member.size();
-        printf("%04d %d %0.3f %.3f\n",
-               (*it.member.begin())-1,len,
-               it.avg_estate,it.avg_area);
-    }
+		if (f != -1) { 
+			vd.push_back(f);
+			adj_m[f].adj_m.push_back(id);
+		}
+		if (m != -1) {
+			vd.push_back(m);
+			adj_m[m].adj_m.push_back(id);
+		}
+		FOR(j, 0, c) {
+			READ_INT(tmp);
+			vd.push_back(tmp);
+			adj_m[tmp].adj_m.push_back(id);
+		}
+		cin >> d.estate >> d.area;
+	}
+	check();
 	return 0;
 }
-
-
-
 
